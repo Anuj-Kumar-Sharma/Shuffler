@@ -1,29 +1,36 @@
 package com.example.anujsharma.shuffler.activities;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.anujsharma.shuffler.R;
 import com.example.anujsharma.shuffler.adapters.MainRecyclerViewAdapter;
+import com.example.anujsharma.shuffler.dataStructures.Song;
+
+import java.io.File;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String TAG = "MyMainActivity";
     private RecyclerView mainRecyclerView;
     private LinearLayoutManager layoutManager;
     private MainRecyclerViewAdapter mainRecyclerViewAdapter;
+    private ArrayList<Song> songsList;
+    private MediaMetadataRetriever metadataRetriever;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -32,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setElevation(0);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.colorAccent));
         setSupportActionBar(toolbar);
 
 
@@ -44,11 +52,46 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        songsList = getSongs(new File(Environment.getExternalStorageDirectory().getPath() + "/SHAREit/files/audios/"));
         mainRecyclerView = (RecyclerView) findViewById(R.id.mainRecyclerView);
         layoutManager = new LinearLayoutManager(this);
-        mainRecyclerViewAdapter = new MainRecyclerViewAdapter(this);
+        mainRecyclerViewAdapter = new MainRecyclerViewAdapter(this, songsList);
         mainRecyclerView.setLayoutManager(layoutManager);
         mainRecyclerView.setAdapter(mainRecyclerViewAdapter);
+
+
+    }
+
+    private ArrayList<Song> getSongs(File root) {
+        ArrayList<Song> songsList = new ArrayList();
+        File[] files = root.listFiles();
+        for (File singleFile : files) {
+            if (singleFile.isDirectory() && !singleFile.isHidden()) {
+                songsList.addAll(getSongs(singleFile));
+            } else {
+                if ((singleFile.getName().endsWith(".mp3") || singleFile.getName().endsWith(".m4a"))
+                        && !singleFile.getName().startsWith("Call@")) {
+                    songsList.add(getSongMetaData(singleFile));
+                }
+            }
+        }
+        return songsList;
+    }
+
+    public Song getSongMetaData(File file) {
+        Song song;
+        Uri uri = Uri.fromFile(file);
+        metadataRetriever = new MediaMetadataRetriever();
+        metadataRetriever.setDataSource(file.toURI().getPath());
+        String title = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+        if (title == null) return null;
+        String album = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
+        String artist = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+        String genre = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE);
+        int duration = Integer.parseInt(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) / 1000;
+        song = new Song(title, artist, genre, album, duration);
+        if (metadataRetriever != null) metadataRetriever.release();
+        return song;
     }
 
     @Override

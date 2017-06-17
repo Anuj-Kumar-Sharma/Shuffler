@@ -8,13 +8,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.anujsharma.shuffler.R;
+import com.example.anujsharma.shuffler.dataStructures.Song;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class MainRecyclerViewAdapter extends RecyclerView.Adapter<MainRecyclerViewAdapter.MyViewHolder>{
 
     private Context context;
+    private ArrayList<Song> songsList;
 
-    public MainRecyclerViewAdapter(Context context) {
+    public MainRecyclerViewAdapter(Context context, ArrayList<Song> songsList) {
         this.context = context;
+        this.songsList = songsList;
     }
 
     @Override
@@ -25,17 +31,26 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<MainRecyclerVi
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.songId.setText(""+(position+1));
+        if (songsList.get(position) != null) {
+            holder.songId.setText("" + (position + 1));
+            holder.title.setText(songsList.get(position).getTitle());
+            if (songsList.get(position).getArtist() != null)
+                if (songsList.get(position).getArtist().trim().isEmpty())
+                    songsList.get(position).setArtist("Unknown Artist");
+            holder.artist.setText(songsList.get(position).getArtist());
+            int duration = songsList.get(position).getDuration();
+            holder.duration.setText(duration / 60 + ":" + (new DecimalFormat("00").format(duration % 60)));
+        }
     }
 
     @Override
     public int getItemCount() {
-        return 30;
+        return songsList.size();
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView title, songId, artist, album, duration;
+        private TextView title, songId, artist, duration;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -43,7 +58,6 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<MainRecyclerVi
             title = (TextView) itemView.findViewById(R.id.tvTitle);
             songId = (TextView) itemView.findViewById(R.id.songId);
             artist = (TextView) itemView.findViewById(R.id.tvArtist);
-            album = (TextView) itemView.findViewById(R.id.tvAlbum);
             duration = (TextView) itemView.findViewById(R.id.tvDuration);
         }
     }
