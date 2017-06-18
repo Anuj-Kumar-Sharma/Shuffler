@@ -8,19 +8,22 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.anujsharma.shuffler.R;
+import com.example.anujsharma.shuffler.backgroundTasks.RetrieveSongMetaData;
 import com.example.anujsharma.shuffler.dataStructures.Song;
 
-import java.text.DecimalFormat;
+import java.io.File;
 import java.util.ArrayList;
 
 public class MainRecyclerViewAdapter extends RecyclerView.Adapter<MainRecyclerViewAdapter.MyViewHolder>{
 
     private Context context;
     private ArrayList<Song> songsList;
+    private ArrayList<File> songsFileList;
+    private RetrieveSongMetaData retrieveSongMetaData;
 
-    public MainRecyclerViewAdapter(Context context, ArrayList<Song> songsList) {
+    public MainRecyclerViewAdapter(Context context, ArrayList<File> songsFileList) {
         this.context = context;
-        this.songsList = songsList;
+        this.songsFileList = songsFileList;
     }
 
     @Override
@@ -31,21 +34,16 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<MainRecyclerVi
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        if (songsList.get(position) != null) {
-            holder.songId.setText("" + (position + 1));
-            holder.title.setText(songsList.get(position).getTitle());
-            if (songsList.get(position).getArtist() != null)
-                if (songsList.get(position).getArtist().trim().isEmpty())
-                    songsList.get(position).setArtist("Unknown Artist");
-            holder.artist.setText(songsList.get(position).getArtist());
-            int duration = songsList.get(position).getDuration();
-            holder.duration.setText(duration / 60 + ":" + (new DecimalFormat("00").format(duration % 60)));
+        holder.songId.setText((position + 1) + "");
+        if (songsFileList.get(position) != null) {
+            retrieveSongMetaData = new RetrieveSongMetaData(holder.title, holder.artist, holder.duration);
+            retrieveSongMetaData.execute(songsFileList.get(position));
         }
     }
 
     @Override
     public int getItemCount() {
-        return songsList.size();
+        return songsFileList.size();
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {

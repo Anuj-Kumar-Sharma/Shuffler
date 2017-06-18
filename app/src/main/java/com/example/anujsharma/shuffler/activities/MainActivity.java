@@ -2,7 +2,6 @@ package com.example.anujsharma.shuffler.activities;
 
 import android.content.Intent;
 import android.media.MediaMetadataRetriever;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,10 +17,11 @@ import android.view.View;
 
 import com.example.anujsharma.shuffler.R;
 import com.example.anujsharma.shuffler.adapters.MainRecyclerViewAdapter;
-import com.example.anujsharma.shuffler.dataStructures.Song;
+import com.example.anujsharma.shuffler.backgroundTasks.FetchSongFilesTask;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,8 +29,9 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mainRecyclerView;
     private LinearLayoutManager layoutManager;
     private MainRecyclerViewAdapter mainRecyclerViewAdapter;
-    private ArrayList<Song> songsList;
+    private ArrayList<File> songsList;
     private MediaMetadataRetriever metadataRetriever;
+    private FetchSongFilesTask fetchSongFilesTask;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -52,7 +53,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        songsList = getSongs(new File(Environment.getExternalStorageDirectory().getPath() + "/SHAREit/files/audios/"));
+        File rootFile = new File(Environment.getExternalStorageDirectory().getPath() + "/SHAREit/files/audios/");
+        fetchSongFilesTask = new FetchSongFilesTask(this);
+        try {
+            songsList = fetchSongFilesTask.execute(rootFile).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         mainRecyclerView = (RecyclerView) findViewById(R.id.mainRecyclerView);
         layoutManager = new LinearLayoutManager(this);
         mainRecyclerViewAdapter = new MainRecyclerViewAdapter(this, songsList);
@@ -62,37 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private ArrayList<Song> getSongs(File root) {
-        ArrayList<Song> songsList = new ArrayList();
-        File[] files = root.listFiles();
-        for (File singleFile : files) {
-            if (singleFile.isDirectory() && !singleFile.isHidden()) {
-                songsList.addAll(getSongs(singleFile));
-            } else {
-                if ((singleFile.getName().endsWith(".mp3") || singleFile.getName().endsWith(".m4a"))
-                        && !singleFile.getName().startsWith("Call@")) {
-                    songsList.add(getSongMetaData(singleFile));
-                }
-            }
-        }
-        return songsList;
-    }
-
-    public Song getSongMetaData(File file) {
-        Song song;
-        Uri uri = Uri.fromFile(file);
-        metadataRetriever = new MediaMetadataRetriever();
-        metadataRetriever.setDataSource(file.toURI().getPath());
-        String title = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-        if (title == null) return null;
-        String album = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
-        String artist = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-        String genre = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE);
-        int duration = Integer.parseInt(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) / 1000;
-        song = new Song(title, artist, genre, album, duration);
-        if (metadataRetriever != null) metadataRetriever.release();
-        return song;
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -115,4 +93,5 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
