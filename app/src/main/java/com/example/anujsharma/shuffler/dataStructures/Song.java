@@ -1,15 +1,19 @@
 package com.example.anujsharma.shuffler.dataStructures;
 
+import java.io.File;
+
 public class Song {
     private String title, artist, genre, album;
     private int duration;
+    private File songFile;
 
-    public Song(String title, String artist, String genre, String album, int duration) {
+    public Song(String title, String artist, String genre, String album, int duration, File songFile) {
         this.title = title;
         this.artist = artist;
         this.genre = genre;
         this.album = album;
         this.duration = duration;
+        this.songFile = songFile;
     }
 
     public String getTitle() {
@@ -50,5 +54,13 @@ public class Song {
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public File getSongFile() {
+        return songFile;
+    }
+
+    public void setSongFile(File songFile) {
+        this.songFile = songFile;
     }
 }
