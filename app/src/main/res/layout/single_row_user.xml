@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rlEachUserLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorDark"
+    android:padding="@dimen/_6sdp">
+
+    <ImageView
+        android:id="@+id/ivUserImage"
+        android:layout_width="@dimen/_54sdp"
+        android:layout_height="@dimen/_54sdp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:padding="@dimen/_6sdp"
+        app:srcCompat="@mipmap/ic_launcher_round" />
+
+    <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+        android:id="@+id/tvUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:layout_toEndOf="@id/ivUserImage"
+        android:layout_toStartOf="@+id/ivUserMenu"
+        android:padding="@dimen/_6sdp"
+        android:text="Eminem"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_13ssp"
+        app:typeface="@string/Font_Montserrat_Regular" />
+
+    <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+        android:id="@+id/tvFollowersCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvUserName"
+        android:layout_toEndOf="@+id/ivUserImage"
+        android:drawableLeft="@drawable/ic_followers"
+        android:text="409K"
+        android:textColor="@color/color_unselected"
+        android:textSize="@dimen/_11ssp"
+        app:typeface="@string/Font_Montserrat_Light" />
+
+    <ImageView
+        android:id="@+id/ivUserMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        app:srcCompat="@drawable/ic_menu" />
+
+</RelativeLayout>

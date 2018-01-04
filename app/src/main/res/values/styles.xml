@@ -17,4 +17,13 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="FeedTablLayout" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">@color/colorPrimary</item>
+        <item name="tabIndicatorHeight">3dp</item>
+        <item name="tabPaddingStart">3dp</item>
+        <item name="android:textSize">@dimen/feed_bottom_text_size</item>
+        <item name="tabPaddingEnd">3dp</item>
+        <item name="tabSelectedTextColor">@color/white</item>
+    </style>
+
 </resources>

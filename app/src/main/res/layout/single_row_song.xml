@@ -1,68 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+        android:id="@+id/songId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="30dp"
+        android:text="1"
+        app:typeface="@string/Font_Montserrat_Light" />
+
+    <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/songId"
+        android:layout_toLeftOf="@+id/ivPlayIndicator"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:padding="5dp"
+        android:text="Animals"
+        android:textColor="@android:color/black"
+        android:textSize="12sp"
+        app:typeface="@string/Font_Montserrat_Regular" />
+
+    <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+        android:id="@+id/tvArtist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvTitle"
+        android:layout_toEndOf="@+id/songId"
+        android:padding="5dp"
+        android:text="Maroon 5"
+        android:textSize="12sp"
+        app:typeface="@string/Font_Montserrat_Light" />
 
 
-        <TextView
-            android:id="@+id/songId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="30dp"
-            android:text="1" />
+    <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+        android:id="@+id/tvDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvArtist"
+        android:layout_toEndOf="@+id/tvArtist"
+        android:padding="5dp"
+        android:text="12:01"
+        android:textSize="12sp"
+        app:typeface="@string/Font_Montserrat_Light" />
 
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/songId"
-            android:layout_toLeftOf="@+id/ivPlayIndicator"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:padding="5dp"
-            android:text="Animals"
-            android:textColor="@android:color/black"
-            android:textSize="16sp" />
+    <ImageView
+        android:id="@+id/ivPlayIndicator"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="10dp"
+        android:scaleType="fitXY"
+        android:visibility="visible"
+        app:srcCompat="@drawable/ic_play" />
 
-        <TextView
-            android:id="@+id/tvArtist"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvTitle"
-            android:layout_toEndOf="@+id/songId"
-            android:padding="5dp"
-            android:text="Maroon 5"
-            android:textSize="12sp" />
-
-
-        <TextView
-            android:id="@+id/tvDuration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/tvArtist"
-            android:layout_toEndOf="@+id/tvArtist"
-            android:padding="5dp"
-            android:text="12:01"
-            android:textSize="12sp"/>
-
-        <ImageView
-            android:id="@+id/ivPlayIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_action_playing" />
-
-    </RelativeLayout>
-
-</android.support.v7.widget.CardView>
+</RelativeLayout>

@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.example.anujsharma.shuffler.dataStructures.Song;
+import com.example.anujsharma.shuffler.models.Song;
 
 import java.io.File;
 import java.util.ArrayList;

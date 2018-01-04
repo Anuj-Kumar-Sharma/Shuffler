@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.anujsharma.shuffler.R;
-import com.example.anujsharma.shuffler.dataStructures.Song;
+import com.example.anujsharma.shuffler.models.Song;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<MainRecyclerVi
         Song song = songs.get(position);
         holder.title.setText(song.getTitle());
         holder.artist.setText(song.getArtist());
-        int timeDuration = song.getDuration();
+        long timeDuration = song.getDuration();
         holder.duration.setText(timeDuration / 60 + ":" + (new DecimalFormat("00").format(timeDuration % 60)));
 
 
@@ -55,10 +55,10 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<MainRecyclerVi
                     if (NOW_PLAYING == position) {
                         if (mediaPlayer.isPlaying()) {
                             mediaPlayer.pause();
-                            holder.ivPlayIndicator.setImageResource(R.drawable.ic_action_paused);
+                            holder.ivPlayIndicator.setImageResource(R.drawable.ic_pause);
                         } else {
                             mediaPlayer.start();
-                            holder.ivPlayIndicator.setImageResource(R.drawable.ic_action_playing);
+                            holder.ivPlayIndicator.setImageResource(R.drawable.ic_play);
                         }
                     } else {
                         mediaPlayer.stop();

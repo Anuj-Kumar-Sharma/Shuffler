@@ -1,58 +1,73 @@
 package com.example.anujsharma.shuffler.activities;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.anujsharma.shuffler.R;
-import com.example.anujsharma.shuffler.adapters.MainRecyclerViewAdapter;
-import com.example.anujsharma.shuffler.backgroundTasks.FetchSongFilesTask;
+import com.example.anujsharma.shuffler.dao.TracksDao;
+import com.example.anujsharma.shuffler.fragments.HomeFragment;
+import com.example.anujsharma.shuffler.fragments.SearchFragment;
+import com.example.anujsharma.shuffler.fragments.YourLibraryFragment;
+import com.example.anujsharma.shuffler.models.Song;
+import com.example.anujsharma.shuffler.utilities.Constants;
+import com.example.anujsharma.shuffler.utilities.SharedPreference;
+import com.example.anujsharma.shuffler.volley.RequestCallback;
+import com.example.anujsharma.shuffler.volley.Urls;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RequestCallback {
 
-    public static final String TAG = "MyMainActivity";
+    public static final String TAG = "TAG";
+    public static final String HOME_FRAGMENT = "homeFragment";
+    public static final String SEARCH_FRAGMENT = "searchFragment";
+    public static final String YOUR_LIBRARY_FRAGMENT = "yourLibraryFragment";
     private final int REQUEST_PERMS_CODE = 1;
-    private RecyclerView mainRecyclerView;
+    SharedPreference pref;
+    private boolean initHomeFragment, initSearchFragment, initYourLibraryFragment;
+    private HomeFragment homeFragment;
+    private SearchFragment searchFragment;
+    private YourLibraryFragment yourLibraryFragment;
+    /*private RecyclerView mainRecyclerView;
     private LinearLayoutManager layoutManager;
     private MainRecyclerViewAdapter mainRecyclerViewAdapter;
     private ArrayList<File> songsList;
-    private FetchSongFilesTask fetchSongFilesTask;
+    private FetchSongFilesTask fetchSongFilesTask;*/
     private MediaPlayer mediaPlayer;
+    private Context context;
+    private ProgressBar mainSongLoader;
+    private TextView tvHome, tvSearch, tvMyProfile, tvSongName;
+    private ImageView ivPlay, ivNext, ivFullView;
+    private Song currentPlayingSong;
+    private TracksDao tracksDao;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setElevation(0);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-        setSupportActionBar(toolbar);
 
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
-
+        initialise();
+        initialiseListeners();
         if (hasPermissons()) {
             mainStuff();
         } else {
@@ -60,51 +75,171 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void initialiseListeners() {
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                togglePlay(mp);
+            }
+        });
 
-    public void mainStuff() {
-        File rootFile = new File(Environment.getExternalStorageDirectory().getPath() + "/SHAREit/files/audios/");
-        fetchSongFilesTask = new FetchSongFilesTask(this);
-        fetchSongFilesTask.execute(rootFile);
+        ivPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                togglePlay(mediaPlayer);
+            }
+        });
+    }
 
-        mainRecyclerView = (RecyclerView) findViewById(R.id.mainRecyclerView);
-        layoutManager = new LinearLayoutManager(this);
-        mainRecyclerViewAdapter = new MainRecyclerViewAdapter(this, mediaPlayer);
-        mainRecyclerView.setLayoutManager(layoutManager);
-        mainRecyclerView.setAdapter(mainRecyclerViewAdapter);
+    public void initialise() {
+        context = getApplicationContext();
+        pref = new SharedPreference(context);
+        tracksDao = new TracksDao(context, this);
+
+        tvHome = (TextView) findViewById(R.id.xtvHome);
+        tvSearch = (TextView) findViewById(R.id.xtvSearch);
+        tvMyProfile = (TextView) findViewById(R.id.xtvMyProfile);
+//        mainRecyclerView = (RecyclerView) findViewById(R.id.mainRecyclerView);
+        tvSongName = (TextView) findViewById(R.id.tvSongName);
+        mainSongLoader = (ProgressBar) findViewById(R.id.pbLoadSong);
+        tvSongName.setSelected(true);
+        ivFullView = (ImageView) findViewById(R.id.ivUpArrow);
+        ivNext = (ImageView) findViewById(R.id.ivPlayNext);
+        ivPlay = (ImageView) findViewById(R.id.ivPlaySong);
+
+        mediaPlayer = new MediaPlayer();
+        Log.d(TAG, "get " + pref.getCurrentPlayingSong());
+        tracksDao.getTrackWithId(pref.getCurrentPlayingSong());
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    public void modifyBottomLayout(int position) {
+        switch (position) {
+            case 0:
+                tvHome.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_home_selected, 0, 0);
+                tvHome.setTextColor(ContextCompat.getColor(context, R.color.white));
+                tvSearch.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_search, 0, 0);
+                tvSearch.setTextColor(ContextCompat.getColor(context, R.color.color_unselected));
+                tvMyProfile.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_library, 0, 0);
+                tvMyProfile.setTextColor(ContextCompat.getColor(context, R.color.color_unselected));
+                break;
+            case 1:
+                tvHome.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_home, 0, 0);
+                tvHome.setTextColor(ContextCompat.getColor(context, R.color.color_unselected));
+                tvSearch.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_search_selected, 0, 0);
+                tvSearch.setTextColor(ContextCompat.getColor(context, R.color.white));
+                tvMyProfile.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_library, 0, 0);
+                tvMyProfile.setTextColor(ContextCompat.getColor(context, R.color.color_unselected));
+                break;
+            case 2:
+                tvHome.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_home, 0, 0);
+                tvHome.setTextColor(ContextCompat.getColor(context, R.color.color_unselected));
+                tvSearch.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_search, 0, 0);
+                tvSearch.setTextColor(ContextCompat.getColor(context, R.color.color_unselected));
+                tvMyProfile.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_library_selected, 0, 0);
+                tvMyProfile.setTextColor(ContextCompat.getColor(context, R.color.white));
+                break;
         }
+    }
 
-        return super.onOptionsItemSelected(item);
+    public void homeTabClicked(View view) {
+        if (!initHomeFragment) {
+            initHomeFragment = true;
+            homeFragment = new HomeFragment();
+        }
+        addFragmentToMainFrameContainer(homeFragment, HOME_FRAGMENT);
+    }
+
+    public void searchTabClicked(View view) {
+        if (!initSearchFragment) {
+            initSearchFragment = true;
+            searchFragment = new SearchFragment();
+        }
+        addFragmentToMainFrameContainer(searchFragment, SEARCH_FRAGMENT);
+    }
+
+    public void yourLibraryClicked(View view) {
+        if (!initYourLibraryFragment) {
+            initYourLibraryFragment = true;
+            yourLibraryFragment = new YourLibraryFragment();
+        }
+        addFragmentToMainFrameContainer(yourLibraryFragment, YOUR_LIBRARY_FRAGMENT);
+    }
+
+
+    public void addFragmentToMainFrameContainer(Fragment fragment, String TAG) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment currentFragment = fragmentManager.findFragmentById(R.id.mainFrameContainer);
+        if (currentFragment != null && currentFragment.getClass().equals(fragment.getClass())) {
+
+        } else {
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.mainFrameContainer, fragment).addToBackStack(null).commit();
+        }
     }
 
     @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+            finish();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+   /* @Override
     protected void onDestroy() {
         super.onDestroy();
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.release();
         }
+    }*/
+
+    public void mainStuff() {
+        /*File rootFile = new File(Environment.getExternalStorageDirectory().getPath()*//* + "/SHAREit/files/audios/"*//*);
+        fetchSongFilesTask = new FetchSongFilesTask(this);
+        fetchSongFilesTask.execute(rootFile);
+        layoutManager = new LinearLayoutManager(this);
+        mainRecyclerViewAdapter = new MainRecyclerViewAdapter(this, mediaPlayer);
+        mainRecyclerView.setLayoutManager(layoutManager);
+        mainRecyclerView.setAdapter(mainRecyclerViewAdapter);*/
+
+        HomeFragment fragment = new HomeFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.mainFrameContainer, fragment, HOME_FRAGMENT)
+                .addToBackStack(null).commit();
     }
 
+    public void playSongInMainActivity(Song song) {
+        currentPlayingSong = song;
+        tvSongName.setText(song.getTitle());
+        mainSongLoader.setVisibility(View.VISIBLE);
+        ivFullView.setVisibility(View.GONE);
+        String url = song.getStreamUrl() + "?client_id=" + Urls.CLIENT_ID;
+        mediaPlayer.reset();
+
+        try {
+            mediaPlayer.setDataSource(url);
+            mediaPlayer.prepareAsync();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void togglePlay(MediaPlayer mp) {
+        if (mp.isPlaying()) {
+            mp.stop();
+            mp.reset();
+        } else {
+            mainSongLoader.setVisibility(View.GONE);
+            ivFullView.setVisibility(View.VISIBLE);
+            mp.start();
+            ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
+        }
+    }
+
+    @SuppressLint("WrongConstant")
     private boolean hasPermissons() {
         int res = 0;
 
@@ -139,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
                 allowed = false;
         }
 
-        if (allowed == true) {
+        if (allowed) {
             mainStuff();
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -148,6 +283,30 @@ public class MainActivity extends AppCompatActivity {
                     requestPermissions();
                 }
             }
+        }
+    }
+
+
+    @Override
+    public void onListRequestSuccessful(ArrayList list, int check, boolean status) {
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        pref.setCurrentPlayingSong(Long.toString(currentPlayingSong.getId()));
+    }
+
+    @Override
+    public void onObjectRequestSuccessful(Object object, int check, boolean status) {
+        switch (check) {
+            case Constants.SEARCH_SONG_WITH_ID:
+                if (status) {
+                    currentPlayingSong = (Song) object;
+                    tvSongName.setText(currentPlayingSong.getTitle());
+                }
+                break;
         }
     }
 }

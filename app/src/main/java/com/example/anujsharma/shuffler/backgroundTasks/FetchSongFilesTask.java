@@ -7,14 +7,14 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.anujsharma.shuffler.adapters.SqliteDbAdapter;
-import com.example.anujsharma.shuffler.dataStructures.Song;
+import com.example.anujsharma.shuffler.models.Song;
 
 import java.io.File;
 import java.util.ArrayList;
 
 public class FetchSongFilesTask extends AsyncTask<File, Void, Void> {
 
-    private static final String TAG = "myErros";
+    private static final String TAG = "myErrors";
     private File rootFile;
     private ProgressDialog progressDialog;
     private Context context;
@@ -35,7 +35,7 @@ public class FetchSongFilesTask extends AsyncTask<File, Void, Void> {
 
 
     private ArrayList<File> getSongs(File root) {
-        ArrayList<File> songsList = new ArrayList();
+        ArrayList<File> songsList = new ArrayList<>();
         File[] files = root.listFiles();
         try {
             Log.d(TAG, root.getPath());
@@ -45,7 +45,7 @@ public class FetchSongFilesTask extends AsyncTask<File, Void, Void> {
                     songsList.addAll(getSongs(singleFile));
                 } else {
                     if ((singleFile.getName().endsWith(".mp3") || singleFile.getName().endsWith(".m4a"))
-                            && !singleFile.getName().startsWith("Call@")) {
+                            /*&& !singleFile.getName().startsWith("Call@")*/) {
 
                         sqliteDbAdapter.addNewSong(getSongMetaData(singleFile));
                     }
@@ -71,7 +71,7 @@ public class FetchSongFilesTask extends AsyncTask<File, Void, Void> {
         if (genre == null) genre = "Unknown Genre";
         int duration = Integer.parseInt(metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) / 1000;
         song = new Song(title, artist, genre, album, duration, file);
-        if (metadataRetriever != null) metadataRetriever.release();
+        metadataRetriever.release();
         return song;
     }
 }

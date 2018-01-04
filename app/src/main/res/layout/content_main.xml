@@ -4,18 +4,167 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.anujsharma.shuffler.activities.MainActivity"
-    tools:showIn="@layout/activity_main"
-    android:background="@color/cardview_dark_background">
+    tools:showIn="@layout/activity_main">
+
+
+    <FrameLayout
+        android:id="@+id/mainFrameContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/music_bar_layout"
+        android:background="@color/colorDark" />
+
+    <RelativeLayout
+        android:id="@+id/music_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_bar_height"
+        android:layout_above="@+id/bottomLayout"
+        android:background="@color/colorPrimary">
+
+        <FrameLayout
+            android:id="@+id/loaderFrame"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <ProgressBar
+                android:id="@+id/pbLoadSong"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_6sdp"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/ivUpArrow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/_12sdp"
+                app:srcCompat="@drawable/ic_up_arrow" />
+        </FrameLayout>
+
+
+        <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+            android:id="@+id/tvSongName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/_8sdp"
+            android:layout_toEndOf="@+id/loaderFrame"
+            android:layout_toStartOf="@+id/ivPlaySong"
+            android:ellipsize="marquee"
+            android:gravity="center"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            app:typeface="@string/Font_Montserrat_Regular" />
+
+        <ImageView
+            android:id="@+id/ivPlaySong"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/ivPlayNext"
+            android:padding="@dimen/_3sdp"
+            app:srcCompat="@drawable/ic_play" />
+
+
+        <ImageView
+            android:id="@+id/ivPlayNext"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/_12sdp"
+            android:layout_marginRight="@dimen/_8sdp"
+            android:padding="@dimen/_3sdp"
+            app:srcCompat="@drawable/ic_next" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorDark" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/bottomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_bar_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/_3sdp">
+
+        <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+            android:id="@+id/xtvHome"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:drawablePadding="@dimen/_3sdp"
+            android:drawableTop="@drawable/ic_home_selected"
+            android:focusable="true"
+            android:gravity="center"
+            android:onClick="homeTabClicked"
+            android:padding="@dimen/_3sdp"
+            android:text="@string/home"
+            android:textColor="@color/white"
+            android:textSize="@dimen/feed_bottom_text_size"
+            app:typeface="@string/Font_Montserrat_Regular" />
+
+
+        <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+            android:id="@+id/xtvSearch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:drawablePadding="@dimen/_3sdp"
+            android:drawableTop="@drawable/ic_search"
+            android:focusable="true"
+            android:gravity="center"
+            android:onClick="searchTabClicked"
+            android:padding="@dimen/_3sdp"
+            android:text="@string/search"
+            android:textColor="@color/color_unselected"
+            android:textSize="@dimen/feed_bottom_text_size"
+            app:typeface="@string/Font_Montserrat_Regular" />
+
+
+        <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+            android:id="@+id/xtvMyProfile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:drawablePadding="@dimen/_3sdp"
+            android:drawableTop="@drawable/ic_library"
+            android:focusable="true"
+            android:gravity="center"
+            android:onClick="yourLibraryClicked"
+            android:padding="@dimen/_3sdp"
+            android:text="@string/your_library"
+            android:textColor="@color/color_unselected"
+            android:textSize="@dimen/feed_bottom_text_size"
+            app:typeface="@string/Font_Montserrat_Regular" />
+
+
+    </LinearLayout>
 
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/mainRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/mainRecyclerView"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:clipToPadding="false"
-        android:paddingBottom="70dp"/>
+        android:paddingBottom="@dimen/_70sdp"
+        android:visibility="gone" />
 </RelativeLayout>

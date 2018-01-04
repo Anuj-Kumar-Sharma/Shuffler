@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorDark"
+    android:padding="@dimen/_6sdp">
+
+    <LinearLayout
+        android:id="@+id/eachSongLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/ivEachSongMenu"
+        android:orientation="vertical">
+
+        <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+            android:id="@+id/tvEachSongName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_6sdp"
+            android:text="@string/dummy_song_name"
+            android:textColor="@color/white"
+            android:textSize="@dimen/each_song_title_text_size"
+            app:typeface="@string/Font_Montserrat_Regular" />
+
+        <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+            android:id="@+id/tvEachSongArtist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/_6sdp"
+            android:paddingLeft="@dimen/_6sdp"
+            android:paddingRight="@dimen/_6sdp"
+            android:text="@string/dummy_song_artist"
+            android:textColor="@color/color_unselected"
+            android:textSize="@dimen/each_song_artist_text_size"
+            app:typeface="@string/Font_Montserrat_Regular" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+                android:id="@+id/tvEachSongPlayCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:drawableLeft="@drawable/ic_each_song_play"
+                android:text="1.5M"
+                android:textColor="@color/color_unselected"
+                android:visibility="gone"
+                app:typeface="@string/Font_Montserrat_Light" />
+
+            <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+                android:id="@+id/tvEachSongLikesCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:drawableLeft="@drawable/ic_eachsong_fav"
+                android:text="334K"
+                android:textColor="@color/color_unselected"
+                app:typeface="@string/Font_Montserrat_Light" />
+
+
+            <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+                android:id="@+id/tvEachSongDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="right"
+                android:text="3:30"
+                android:textColor="@color/color_unselected"
+                app:typeface="@string/Font_Montserrat_Light" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivEachSongMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        app:srcCompat="@drawable/ic_menu" />
+
+</RelativeLayout>

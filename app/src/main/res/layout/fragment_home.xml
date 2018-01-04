@@ -1,0 +1,27 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorDark"
+    tools:context="com.example.anujsharma.shuffler.fragments.HomeFragment">
+
+    <LinearLayout
+        android:id="@+id/homeHeaderLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_bar_height"
+        android:background="@color/colorPrimary"
+        android:gravity="center">
+
+        <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/home"
+            android:textColor="@color/white"
+            android:textSize="@dimen/top_header_text_size"
+            app:typeface="@string/Font_Montserrat_SemiBold" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

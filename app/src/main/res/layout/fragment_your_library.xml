@@ -1,0 +1,38 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/libraryContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.anujsharma.shuffler.fragments.YourLibraryFragment">
+
+
+    <RelativeLayout
+        android:id="@+id/yourLibraryHeaderLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_bar_height"
+        android:background="@color/colorPrimary">
+
+        <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/your_library"
+            android:textColor="@color/white"
+            android:textSize="@dimen/top_header_text_size"
+            app:typeface="@string/Font_Montserrat_SemiBold" />
+
+
+        <ImageView
+            android:id="@+id/ivHeaderProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/_12sdp"
+            app:srcCompat="@drawable/ic_profile_selected" />
+
+
+    </RelativeLayout>
+
+</FrameLayout>

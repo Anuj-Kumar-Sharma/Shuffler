@@ -1,3 +1,11 @@
 <resources>
-    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="feed_bottom_text_size">@dimen/_9ssp</dimen>
+    <dimen name="top_header_text_size">@dimen/_14ssp</dimen>
+    <dimen name="top_footer_text_size">@dimen/_13ssp</dimen>
+    <dimen name="each_song_artist_text_size">@dimen/_11ssp</dimen>
+    <dimen name="each_song_title_text_size">@dimen/_13ssp</dimen>
+    <dimen name="toolbar_bar_height">@dimen/_46sdp</dimen>
+    <dimen name="feed_video_item_gradient_radius">@dimen/_28sdp</dimen>
+    <dimen name="feed_video_item">@dimen/_60sdp</dimen>
+
 </resources>

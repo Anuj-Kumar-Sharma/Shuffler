@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/search_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorDark">
+
+    <RelativeLayout
+        android:id="@+id/searchHeaderLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_bar_height"
+        android:background="@color/color_editText">
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="1px"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+
+        <ImageView
+            android:id="@+id/ivSearchCross"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:focusable="true"
+            android:padding="@dimen/_12sdp"
+            app:srcCompat="@drawable/ic_cross_out" />
+
+        <com.example.anujsharma.shuffler.fonts.TypefaceEditText
+            android:id="@+id/xetSearch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/ivSearchCross"
+            android:background="@android:color/transparent"
+            android:hint="@string/search_editText"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:padding="@dimen/_12sdp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/color_unselected"
+            android:textSize="@dimen/top_header_text_size"
+            app:typeface="@string/Font_Montserrat_Regular" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvSearchResult"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/searchHeaderLayout"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+</RelativeLayout>
