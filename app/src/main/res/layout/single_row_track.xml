@@ -17,8 +17,9 @@
             android:id="@+id/tvEachSongName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:padding="@dimen/_6sdp"
-            android:text="@string/dummy_song_name"
             android:textColor="@color/white"
             android:textSize="@dimen/each_song_title_text_size"
             app:typeface="@string/Font_Montserrat_Regular" />
@@ -27,10 +28,11 @@
             android:id="@+id/tvEachSongArtist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:paddingBottom="@dimen/_6sdp"
             android:paddingLeft="@dimen/_6sdp"
             android:paddingRight="@dimen/_6sdp"
-            android:text="@string/dummy_song_artist"
             android:textColor="@color/color_unselected"
             android:textSize="@dimen/each_song_artist_text_size"
             app:typeface="@string/Font_Montserrat_Regular" />
@@ -57,7 +59,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:drawableLeft="@drawable/ic_eachsong_fav"
-                android:text="334K"
                 android:textColor="@color/color_unselected"
                 app:typeface="@string/Font_Montserrat_Light" />
 
@@ -68,7 +69,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:gravity="right"
-                android:text="3:30"
                 android:textColor="@color/color_unselected"
                 app:typeface="@string/Font_Montserrat_Light" />
 
@@ -83,6 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        app:srcCompat="@drawable/ic_menu" />
+        android:padding="@dimen/_6sdp"
+        app:srcCompat="@drawable/ic_three_dots" />
 
 </RelativeLayout>

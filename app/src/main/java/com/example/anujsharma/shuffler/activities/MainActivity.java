@@ -2,13 +2,13 @@ package com.example.anujsharma.shuffler.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -26,6 +26,7 @@ import com.example.anujsharma.shuffler.dao.TracksDao;
 import com.example.anujsharma.shuffler.fragments.HomeFragment;
 import com.example.anujsharma.shuffler.fragments.SearchFragment;
 import com.example.anujsharma.shuffler.fragments.YourLibraryFragment;
+import com.example.anujsharma.shuffler.models.Playlist;
 import com.example.anujsharma.shuffler.models.Song;
 import com.example.anujsharma.shuffler.utilities.Constants;
 import com.example.anujsharma.shuffler.utilities.SharedPreference;
@@ -59,8 +60,8 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
     private ImageView ivPlay, ivNext, ivFullView;
     private Song currentPlayingSong;
     private TracksDao tracksDao;
+    private Playlist currentPlaylist;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +91,29 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
                 togglePlay(mediaPlayer);
             }
         });
+        ivFullView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentPlaylist != null) {
+                    Intent intent = new Intent(context, ViewSongActivity.class);
+                    intent.putExtra(Constants.PLAYLIST_MODEL_KEY, currentPlaylist);
+                    intent.putExtra(Constants.CURRENT_PLAYING_SONG_POSITION, 0);
+                    context.startActivity(intent);
+                }
+            }
+        });
+
+        tvSongName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentPlaylist != null) {
+                    Intent intent = new Intent(context, ViewSongActivity.class);
+                    intent.putExtra(Constants.PLAYLIST_MODEL_KEY, currentPlaylist);
+                    intent.putExtra(Constants.CURRENT_PLAYING_SONG_POSITION, 0);
+                    context.startActivity(intent);
+                }
+            }
+        });
     }
 
     public void initialise() {
@@ -97,20 +121,19 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         pref = new SharedPreference(context);
         tracksDao = new TracksDao(context, this);
 
-        tvHome = (TextView) findViewById(R.id.xtvHome);
-        tvSearch = (TextView) findViewById(R.id.xtvSearch);
-        tvMyProfile = (TextView) findViewById(R.id.xtvMyProfile);
+        tvHome = findViewById(R.id.xtvHome);
+        tvSearch = findViewById(R.id.xtvSearch);
+        tvMyProfile = findViewById(R.id.xtvMyProfile);
 //        mainRecyclerView = (RecyclerView) findViewById(R.id.mainRecyclerView);
-        tvSongName = (TextView) findViewById(R.id.tvSongName);
-        mainSongLoader = (ProgressBar) findViewById(R.id.pbLoadSong);
+        tvSongName = findViewById(R.id.tvSongName);
+        mainSongLoader = findViewById(R.id.pbLoadSong);
         tvSongName.setSelected(true);
-        ivFullView = (ImageView) findViewById(R.id.ivUpArrow);
-        ivNext = (ImageView) findViewById(R.id.ivPlayNext);
-        ivPlay = (ImageView) findViewById(R.id.ivPlaySong);
+        ivFullView = findViewById(R.id.ivUpArrow);
+        ivNext = findViewById(R.id.ivPlayNext);
+        ivPlay = findViewById(R.id.ivPlaySong);
 
         mediaPlayer = new MediaPlayer();
-        Log.d(TAG, "get " + pref.getCurrentPlayingSong());
-        tracksDao.getTrackWithId(pref.getCurrentPlayingSong());
+        tracksDao.getTrackWithId(String.valueOf(pref.getCurrentPlayingSong()));
     }
 
 
@@ -213,11 +236,14 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
 
     public void playSongInMainActivity(Song song) {
         currentPlayingSong = song;
+        pref.setCurrentPlayingSong(song.getId());
         tvSongName.setText(song.getTitle());
         mainSongLoader.setVisibility(View.VISIBLE);
         ivFullView.setVisibility(View.GONE);
         String url = song.getStreamUrl() + "?client_id=" + Urls.CLIENT_ID;
         mediaPlayer.reset();
+        pref.setCurrentPlayingSong(song.getId());
+        Log.d("TAG", "currently playing " + url);
 
         try {
             mediaPlayer.setDataSource(url);
@@ -237,6 +263,10 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
             mp.start();
             ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
         }
+    }
+
+    public void modifyCurrentSongList(Playlist playlist) {
+        this.currentPlaylist = playlist;
     }
 
     @SuppressLint("WrongConstant")
@@ -295,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
     @Override
     protected void onStop() {
         super.onStop();
-        pref.setCurrentPlayingSong(Long.toString(currentPlayingSong.getId()));
+        pref.setCurrentPlayingSong(currentPlayingSong.getId());
     }
 
     @Override

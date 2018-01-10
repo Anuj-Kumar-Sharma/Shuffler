@@ -16,7 +16,16 @@
     <string name="your_library">Your Library</string>
     <string name="dummy_song_text">Young Dumb &amp; Broke \u2022 Khalid \u2022 American Teen</string>
     <string name="dummy_song_name">Be Your Love</string>
-    <string name="dummy_song_artist">Bishop Briggs • Be Your Love</string>
+    <string name="dummy_song_artist">Bishop Briggs</string>
+    <string name="playing_from">PLAYING FROM</string>
+    <string name="playing_from_playlist">Daily Mix</string>
     <string name="songs">Songs</string>
     <string name="footer_text">See all songs</string>
+    <string name="user_followers">2,695,760 FOLLOWERS</string>
+    <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="go_to_artist_profile">Go to Artist Profile</string>
+    <string name="like">Like</string>
+    <string name="share">Share</string>
+    <string name="unknown_artist">Unknown artist</string>
+    <string name="time">3:31</string>
 </resources>

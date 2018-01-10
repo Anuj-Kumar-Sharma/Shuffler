@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/userToolbar"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/toolbar_bar_height"
+    android:background="@color/colorPrimaryDark"
+    app:elevation="0dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/ivUserBackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:paddingEnd="@dimen/_6sdp"
+            app:srcCompat="@drawable/ic_back" />
+
+        <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+            android:id="@+id/tvHeaderUserName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="@dimen/_36sdp"
+            android:layout_toEndOf="@+id/ivUserBackButton"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/top_header_text_size"
+            app:typeface="@string/Font_Montserrat_Regular" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.Toolbar>

@@ -1,0 +1,19 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.anujsharma.shuffler.fragments.SeeAllFragment">
+
+    <include
+        android:id="@+id/seeAllToolbar"
+        layout="@layout/user_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_bar_height" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvSeeAll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

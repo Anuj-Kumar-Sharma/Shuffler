@@ -24,7 +24,6 @@
         android:layout_toEndOf="@id/ivUserImage"
         android:layout_toStartOf="@+id/ivUserMenu"
         android:padding="@dimen/_6sdp"
-        android:text="Eminem"
         android:textColor="@color/white"
         android:textSize="@dimen/_13ssp"
         app:typeface="@string/Font_Montserrat_Regular" />
@@ -36,7 +35,6 @@
         android:layout_below="@+id/tvUserName"
         android:layout_toEndOf="@+id/ivUserImage"
         android:drawableLeft="@drawable/ic_followers"
-        android:text="409K"
         android:textColor="@color/color_unselected"
         android:textSize="@dimen/_11ssp"
         app:typeface="@string/Font_Montserrat_Light" />
@@ -47,6 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        app:srcCompat="@drawable/ic_menu" />
+        android:padding="@dimen/_6sdp"
+        app:srcCompat="@drawable/ic_three_dots" />
 
 </RelativeLayout>

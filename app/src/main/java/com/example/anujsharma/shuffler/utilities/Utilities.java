@@ -1,9 +1,15 @@
 package com.example.anujsharma.shuffler.utilities;
 
+import android.content.Context;
+
+import com.example.anujsharma.shuffler.models.Song;
 import com.example.anujsharma.shuffler.volley.Urls;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by anuj5 on 02-01-2018.
@@ -37,6 +43,14 @@ public class Utilities {
 
     public static String getApiUrlUserId(String userId) {
         return Urls.USERS + "/" + userId + "?client_id=" + Urls.CLIENT_ID;
+    }
+
+    public static String getApiUrlPlaylistsQuery(String query, int limit) {
+        return Urls.PLAYLISTS + "?&q=" + query + "&limit=" + limit + "&filter=public&client_id=" + Urls.CLIENT_ID;
+    }
+
+    public static String getApiUrlPlaylistId(String playlistId) {
+        return Urls.PLAYLISTS + "/" + playlistId + "?limit=200&client_id=" + Urls.CLIENT_ID;
     }
 
     public static String getApiUrlTrackOfUser(String userId, int limit) {
@@ -75,5 +89,27 @@ public class Utilities {
     public static String formatTime(long n) {
         long s = n / 1000;
         return String.format("%d:%02d", s / 60, s % 60);
+    }
+
+    public static String formatIntegerWithCommas(int followersCount, String append) {
+        return NumberFormat.getNumberInstance(Locale.US).format(followersCount) + append;
+    }
+
+    public static int getSelectedPosition(Context context, List<Song> songs, int offset) {
+        SharedPreference pref = new SharedPreference(context);
+        long currentPos = pref.getCurrentPlayingSong();
+        for (Song song : songs) {
+            if (song.getId() == currentPos) return offset;
+            offset++;
+        }
+        return -1;
+    }
+
+    public static String getLargeArtworkUrl(String songArtwork) {
+        // -large.jpg
+        if (songArtwork != null && !songArtwork.isEmpty()) {
+            songArtwork = songArtwork.replace("large.jpg", "t500x500.jpg");
+        }
+        return songArtwork;
     }
 }

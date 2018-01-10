@@ -20,9 +20,19 @@
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.ViewSongActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/viewSongTheme"
+            android:windowSoftInputMode="adjustNothing" />
+
+        <meta-data
+            android:name="com.example.anujsharma.shuffler.utilities.MyGlideModule"
+            android:value="GlideModule" />
     </application>
 
 </manifest>

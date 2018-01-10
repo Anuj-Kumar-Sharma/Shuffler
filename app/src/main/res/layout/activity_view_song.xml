@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.anujsharma.shuffler.activities.ViewSongActivity">
+
+    <RelativeLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_bar_height"
+        android:background="@color/colorDark">
+
+        <ImageView
+            android:id="@+id/ivBackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="@dimen/_12sdp"
+            app:srcCompat="@drawable/ic_down_arrow" />
+
+        <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+            android:id="@+id/playingFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:text="@string/playing_from"
+            android:textColor="@color/white"
+            android:textSize="@dimen/feed_bottom_text_size"
+            app:typeface="@string/Font_Montserrat_Light" />
+
+        <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+            android:id="@+id/tvPlayingFromPlaylist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/playingFrom"
+            android:layout_centerHorizontal="true"
+            android:layout_toEndOf="@+id/ivBackButton"
+            android:layout_toStartOf="@+id/ivShowPlaylist"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:padding="@dimen/_3sdp"
+            android:text="@string/playing_from_playlist"
+            android:textColor="@color/white"
+            android:textSize="@dimen/feed_bottom_text_size"
+            app:typeface="@string/Font_Montserrat_SemiBold" />
+
+        <ImageView
+            android:id="@+id/ivShowPlaylist"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:padding="@dimen/_12sdp"
+            android:tint="@color/white"
+            app:srcCompat="@drawable/ic_playlist" />
+
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewSongViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottomLayout"
+        android:layout_below="@+id/headerLayout"
+        android:background="@color/colorDark"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/_6sdp"
+        android:paddingLeft="@dimen/_30sdp"
+        android:paddingRight="@dimen/_30sdp"
+        android:paddingTop="@dimen/_6sdp" />
+
+
+    <LinearLayout
+        android:id="@+id/bottomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:background="@color/colorDark"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/_42sdp"
+        android:paddingTop="@dimen/_6sdp">
+
+        <LinearLayout
+            android:id="@+id/topBottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/ivAddToLibrary"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="@dimen/_12sdp"
+                app:srcCompat="@drawable/ic_add" />
+
+            <LinearLayout
+                android:id="@+id/songInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="50"
+                android:orientation="vertical">
+
+                <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+                    android:id="@+id/tvSongName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="@dimen/_6sdp"
+                    android:text="@string/dummy_song_name"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/top_header_text_size"
+                    app:typeface="@string/Font_Montserrat_Regular" />
+
+                <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+                    android:id="@+id/tvArtistName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/dummy_song_artist"
+                    android:textColor="@color/color_unselected"
+                    android:textSize="@dimen/each_song_artist_text_size"
+                    app:typeface="@string/Font_Montserrat_Light" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/ivShowSongMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="@dimen/_12sdp"
+                android:tint="@color/white"
+                app:srcCompat="@drawable/ic_three_dots" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/_6sdp">
+
+            <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+                android:id="@+id/tvCurrentTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingBottom="@dimen/_12sdp"
+                android:paddingLeft="@dimen/_12sdp"
+                android:paddingTop="@dimen/_12sdp"
+                android:text="@string/time"
+                android:textColor="@color/white"
+                app:typeface="@string/Font_Montserrat_Light" />
+
+            <SeekBar
+                android:id="@+id/seekBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="50"
+                android:padding="@dimen/_3sdp"
+                android:progress="50" />
+
+
+            <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+                android:id="@+id/tvDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingBottom="@dimen/_12sdp"
+                android:paddingRight="@dimen/_12sdp"
+                android:paddingTop="@dimen/_12sdp"
+                android:text="@string/time"
+                android:textColor="@color/white"
+                app:typeface="@string/Font_Montserrat_Light" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/_12sdp"
+            android:paddingRight="@dimen/_12sdp">
+
+            <ImageView
+                android:id="@+id/ivShuffle"
+                android:layout_width="@dimen/_42sdp"
+                android:layout_height="@dimen/_42sdp"
+                android:padding="@dimen/_12sdp"
+                android:tint="@color/white"
+                app:srcCompat="@drawable/ic_shuffle" />
+
+            <ImageView
+                android:id="@+id/ivPrevious"
+                android:layout_width="@dimen/_48sdp"
+                android:layout_height="@dimen/_48sdp"
+                android:padding="@dimen/_12sdp"
+                android:tint="@color/white"
+                app:srcCompat="@drawable/ic_previous" />
+
+            <ImageView
+                android:id="@+id/ivPlay"
+                android:layout_width="@dimen/_84sdp"
+                android:layout_height="@dimen/_84sdp"
+                android:padding="@dimen/_12sdp"
+                android:tint="@color/white"
+                app:srcCompat="@drawable/ic_play" />
+
+            <ImageView
+                android:id="@+id/ivNext"
+                android:layout_width="@dimen/_48sdp"
+                android:layout_height="@dimen/_48sdp"
+                android:padding="@dimen/_12sdp"
+                android:tint="@color/white"
+                app:srcCompat="@drawable/ic_next" />
+
+            <ImageView
+                android:id="@+id/ivRepeat"
+                android:layout_width="@dimen/_42sdp"
+                android:layout_height="@dimen/_42sdp"
+                android:padding="@dimen/_12sdp"
+                android:tint="@color/white"
+                app:srcCompat="@drawable/ic_repeat" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

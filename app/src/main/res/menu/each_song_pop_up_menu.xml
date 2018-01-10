@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/popGotoArtistProfile"
+        android:title="@string/go_to_artist_profile" />
+
+    <item
+        android:id="@+id/popLike"
+        android:title="@string/like" />
+
+    <item
+        android:id="@+id/popShare"
+        android:title="@string/share" />
+
+</menu>

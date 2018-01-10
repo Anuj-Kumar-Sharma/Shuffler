@@ -11,6 +11,7 @@ import com.example.anujsharma.shuffler.volley.VolleyRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -56,6 +57,28 @@ public class UsersDao extends VolleyRequest {
             @Override
             public void errorResponse(VolleyError error) {
                 requestCallback.onListRequestSuccessful(null, Constants.SEARCH_USERS_WITH_QUERY, true);
+            }
+        }, Constants.METHOD_GET, null);
+    }
+
+    public void getUserWithId(final String userId) {
+        String url = Utilities.getApiUrlUserId(userId);
+        callApiForObject(url, new DaoCallback() {
+            @Override
+            public void response(Object response) {
+                JSONObject jsonObjectResponse = (JSONObject) response;
+                User user = new User(jsonObjectResponse);
+                requestCallback.onObjectRequestSuccessful(user, Constants.SEARCH_USER_WITH_ID, true);
+            }
+
+            @Override
+            public void stringResponse(String response) {
+
+            }
+
+            @Override
+            public void errorResponse(VolleyError error) {
+                requestCallback.onObjectRequestSuccessful(null, Constants.SEARCH_USER_WITH_ID, false);
             }
         }, Constants.METHOD_GET, null);
     }

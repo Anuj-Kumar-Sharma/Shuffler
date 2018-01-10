@@ -25,7 +25,7 @@ public class Song implements Parcelable {
     private File songFile;
     private String permalink;
     private String songArtwork, streamUrl;
-    private int playbackCount, likesCount;
+    private int playbackCount, likesCount, favoritngsCount;
     private User user;
 
     public Song(long id, long duration, String title, String artist, String genre, String permalink,
@@ -61,8 +61,9 @@ public class Song implements Parcelable {
             this.permalink = song.getString("permalink").trim();
             this.songArtwork = song.getString("artwork_url");
             this.streamUrl = song.getString("stream_url");
-            this.playbackCount = song.getInt("playback_count");
-            this.likesCount = song.getInt("likes_count");
+            this.playbackCount = song.has("playback_count") ? song.getInt("playback_count") : 0;
+            this.likesCount = song.has("likes_count") ? song.getInt("likes_count") : 0;
+            this.favoritngsCount = song.has("favoritings_count") ? song.getInt("favoritings_count") : 0;
             this.user = new User(song.getJSONObject("user"));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -81,6 +82,7 @@ public class Song implements Parcelable {
         streamUrl = in.readString();
         playbackCount = in.readInt();
         likesCount = in.readInt();
+        favoritngsCount = in.readInt();
     }
 
     public User getUser() {
@@ -135,6 +137,10 @@ public class Song implements Parcelable {
         return songFile;
     }
 
+    public int getFavoritngsCount() {
+        return favoritngsCount;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -153,5 +159,6 @@ public class Song implements Parcelable {
         dest.writeString(streamUrl);
         dest.writeInt(playbackCount);
         dest.writeInt(likesCount);
+        dest.writeInt(favoritngsCount);
     }
 }

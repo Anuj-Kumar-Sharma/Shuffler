@@ -7,5 +7,9 @@
     <dimen name="toolbar_bar_height">@dimen/_46sdp</dimen>
     <dimen name="feed_video_item_gradient_radius">@dimen/_28sdp</dimen>
     <dimen name="feed_video_item">@dimen/_60sdp</dimen>
+    <dimen name="user_image_dimen">@dimen/_136sdp</dimen>
+    <dimen name="playlist_image_dimen">@dimen/_54sdp</dimen>
+    <dimen name="user_playlist_image_dimen">@dimen/_136sdp</dimen>
+
 
 </resources>

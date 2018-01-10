@@ -83,4 +83,36 @@ public class TracksDao extends VolleyRequest {
             }
         }, Constants.METHOD_GET, null);
     }
+
+    public void getTracksFromUserId(long userId, int limit) {
+        String url = Utilities.getApiUrlTrackOfUser(Long.toString(userId), limit);
+        callApiForArray(url, new DaoCallback() {
+            @Override
+            public void response(Object response) {
+                JSONArray jsonArrayResponse = (JSONArray) response;
+                ArrayList<Song> songs = new ArrayList<>();
+                if (jsonArrayResponse.length() > 0) {
+                    for (int i = 0; i < jsonArrayResponse.length(); i++) {
+                        try {
+                            Song song = new Song(jsonArrayResponse.getJSONObject(i));
+                            songs.add(song);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                requestCallback.onListRequestSuccessful(songs, Constants.SEARCH_SONGS_WITH_USER_ID, true);
+            }
+
+            @Override
+            public void stringResponse(String response) {
+
+            }
+
+            @Override
+            public void errorResponse(VolleyError error) {
+                requestCallback.onListRequestSuccessful(null, Constants.SEARCH_SONGS_WITH_USER_ID, true);
+            }
+        }, Constants.METHOD_GET, null);
+    }
 }

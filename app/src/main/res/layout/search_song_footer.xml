@@ -12,7 +12,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/_12sdp"
-        android:text="@string/footer_text"
         android:textColor="@color/white"
         android:textSize="@dimen/top_footer_text_size"
         app:typeface="@string/Font_Montserrat_Regular" />

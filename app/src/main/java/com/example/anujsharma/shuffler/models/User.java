@@ -41,11 +41,11 @@ public class User implements Parcelable {
             this.username = user.getString("username");
             this.userAvatar = user.getString("avatar_url");
             this.permalink = user.getString("permalink");
-            this.fullName = user.getString("full_name");
-            this.followersCount = user.getInt("followers_count");
-            this.followingsCount = user.getInt("followings_count");
-            this.tracksCount = user.getInt("track_count");
-            this.playlistCount = user.getInt("playlist_count");
+            this.fullName = user.has("full_name") ? user.getString("full_name") : "Unknown";
+            this.followersCount = user.has("followers_count") ? user.getInt("followers_count") : 0;
+            this.followingsCount = user.has("followings_count") ? user.getInt("followings_count") : 0;
+            this.tracksCount = user.has("track_count") ? user.getInt("track_count") : 0;
+            this.playlistCount = user.has("playlist_count") ? user.getInt("playlist_count") : 0;
         } catch (JSONException e) {
             e.printStackTrace();
         }
