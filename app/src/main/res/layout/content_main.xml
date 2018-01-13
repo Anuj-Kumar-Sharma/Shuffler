@@ -54,6 +54,8 @@
             android:ellipsize="marquee"
             android:gravity="center"
             android:marqueeRepeatLimit="marquee_forever"
+            android:paddingBottom="@dimen/_12sdp"
+            android:paddingTop="@dimen/_12sdp"
             android:scrollHorizontally="true"
             android:singleLine="true"
             android:textColor="@color/white"

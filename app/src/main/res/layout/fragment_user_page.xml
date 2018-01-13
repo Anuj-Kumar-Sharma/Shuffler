@@ -30,10 +30,11 @@
                 android:background="@android:color/transparent"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlwaysCollapsed">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/colorDark"
+                    android:orientation="vertical"
                     app:layout_collapseMode="parallax">
 
                     <ImageView
@@ -41,6 +42,7 @@
                         android:layout_width="@dimen/user_image_dimen"
                         android:layout_height="@dimen/user_image_dimen"
                         android:layout_centerHorizontal="true"
+                        android:layout_gravity="center"
                         android:layout_marginTop="@dimen/_12sdp"
                         android:scaleType="centerCrop"
                         app:srcCompat="@drawable/ic_profile" />
@@ -66,9 +68,15 @@
                         android:textSize="@dimen/each_song_artist_text_size"
                         app:typeface="@string/Font_Montserrat_Regular" />
 
-                </RelativeLayout>
+                </LinearLayout>
 
             </android.support.design.widget.CollapsingToolbarLayout>
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/colorPrimary" />
 
         </android.support.design.widget.AppBarLayout>
 

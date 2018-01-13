@@ -13,8 +13,7 @@
         android:layout_height="@dimen/_54sdp"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:padding="@dimen/_6sdp"
-        app:srcCompat="@mipmap/ic_launcher_round" />
+        android:padding="@dimen/_6sdp" />
 
     <com.example.anujsharma.shuffler.fonts.TypefaceTextView
         android:id="@+id/tvUserName"

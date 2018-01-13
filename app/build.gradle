@@ -42,4 +42,5 @@ dependencies {
     implementation 'com.android.volley:volley:+'
     implementation 'com.github.bumptech.glide:glide:+'
     implementation 'com.android.support:multidex:+'
+    implementation 'com.android.support:palette-v7:27.0.2'
 }

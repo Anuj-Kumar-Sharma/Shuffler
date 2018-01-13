@@ -58,9 +58,12 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
     private ProgressBar mainSongLoader;
     private TextView tvHome, tvSearch, tvMyProfile, tvSongName;
     private ImageView ivPlay, ivNext, ivFullView;
-    private Song currentPlayingSong;
+
     private TracksDao tracksDao;
+    private Song currentPlayingSong;
     private Playlist currentPlaylist;
+    private Intent playIntent;
+    private boolean isMusicPlaying = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -254,13 +257,16 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
     }
 
     private void togglePlay(MediaPlayer mp) {
-        if (mp.isPlaying()) {
+        if (isMusicPlaying) {
             mp.stop();
-            mp.reset();
+//            mp.reset();
+            ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
+            isMusicPlaying = false;
         } else {
             mainSongLoader.setVisibility(View.GONE);
             ivFullView.setVisibility(View.VISIBLE);
             mp.start();
+            isMusicPlaying = true;
             ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
         }
     }

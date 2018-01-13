@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,7 +38,7 @@ public class Playlist implements Parcelable {
     public Playlist(JSONObject playlist) {
         try {
             playlist_id = playlist.getLong("id");
-            duration = playlist.getLong("duration");
+            duration = playlist.has("duration") ? playlist.getLong("duration") : 0;
             user_id = playlist.getLong("user_id");
             genre = playlist.has("genre") ? playlist.getString("genre") : UNKNOWN;
             permalink = playlist.has("permalink") ? playlist.getString("permalink") : UNKNOWN;
@@ -47,6 +48,7 @@ public class Playlist implements Parcelable {
             likes_count = playlist.has("likes_count") ? playlist.getInt("likes_count") : 0;
             user = new User(playlist.getJSONObject("user"));
             JSONArray tracks = playlist.has("tracks") ? playlist.getJSONArray("tracks") : null;
+            songs = new ArrayList<>();
             if (tracks != null)
                 for (int i = 0; i < tracks.length(); i++) {
                     Song song = new Song(tracks.getJSONObject(i));

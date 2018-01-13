@@ -28,6 +28,9 @@ public class Constants {
     public static final int TYPE_TRACK = 11;
     public static final int TYPE_USER = 12;
     public static final int TYPE_PLAYLIST = 13;
+    public static final int TYPE_HISTORY = 25;
+    public static final int TYPE_DATA = 26;
+
 
     public static final String USER_MODEL_KEY = "user";
     public static final String SONG_MODEL_KEY = "song";
@@ -50,4 +53,7 @@ public class Constants {
     public static final int SEARCH_SONG_WITH_PLAYLIST_ID = 20;
     public static final int SEE_ALL_PLAYLISTS_CLICKED = 21;
     public static final String CURRENT_PLAYING_SONG_POSITION = "currentPlayingSongPosition";
+    public static final int CLEAR_HISTORY_CLICKED = 22;
+    public static final int HISTORY_LAYOUT_CLICKED = 23;
+    public static final int HISTORY_CROSS_CLICKED = 24;
 }

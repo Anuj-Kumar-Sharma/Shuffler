@@ -28,4 +28,8 @@
     <string name="share">Share</string>
     <string name="unknown_artist">Unknown artist</string>
     <string name="time">3:31</string>
+    <string name="recent_searches">Recent searches</string>
+    <string name="clear_recent_searches">Clear recent searches</string>
+    <string name="artist">Artist</string>
+    <string name="playlist">Playlist</string>
 </resources>

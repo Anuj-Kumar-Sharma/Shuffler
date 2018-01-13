@@ -39,6 +39,7 @@ public class SqliteDbAdapter {
             contentValues.put(MySQLiteHelper.SONG_DURATION, song.getDuration());
             contentValues.put(MySQLiteHelper.SONG_GENRE, song.getGenre());
 
+
             Log.d(TAG, song.getSongFile().getPath());
             id = sqLiteDatabase.insert(MySQLiteHelper.TABLE_NAME, null, contentValues);
             Log.d(TAG, "row id " + id);

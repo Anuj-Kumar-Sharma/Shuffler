@@ -217,7 +217,8 @@ public class UserPageFragment extends Fragment implements RequestCallback {
                         @Override
                         public int compare(Song o1, Song o2) {
                             if (o2.getFavoritngsCount() > o1.getFavoritngsCount()) return 1;
-                            else return -1;
+                            else if (o2.getFavoritngsCount() < o1.getFavoritngsCount()) return -1;
+                            else return 0;
                         }
                     });
                     if (songs.size() > 4) {

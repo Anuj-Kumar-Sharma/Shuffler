@@ -33,6 +33,11 @@
         <meta-data
             android:name="com.example.anujsharma.shuffler.utilities.MyGlideModule"
             android:value="GlideModule" />
+
+        <service
+            android:name="com.example.anujsharma.shuffler.services.MusicStreamingService"
+            android:enabled="true" />
+
     </application>
 
 </manifest>

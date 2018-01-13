@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/historyLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorDark"
+    android:orientation="horizontal"
+    android:padding="@dimen/_6sdp">
+
+    <ImageView
+        android:id="@+id/ivTypeImage"
+        android:layout_width="@dimen/_54sdp"
+        android:layout_height="@dimen/_54sdp"
+        android:layout_weight="1"
+        android:padding="@dimen/_6sdp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="30"
+        android:orientation="vertical">
+
+        <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+            android:id="@+id/typeName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:padding="@dimen/_6sdp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_13ssp"
+            app:typeface="@string/Font_Montserrat_Regular" />
+
+
+        <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+            android:id="@+id/type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingLeft="@dimen/_6sdp"
+            android:textColor="@color/color_unselected"
+            android:textSize="@dimen/_11ssp"
+            app:typeface="@string/Font_Montserrat_Regular" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivCross"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:padding="@dimen/_6sdp"
+        app:srcCompat="@drawable/ic_cross_out" />
+
+</LinearLayout>

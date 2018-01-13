@@ -2,15 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rlViewSongLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/transparent_black"
+    android:fitsSystemWindows="true"
     tools:context="com.example.anujsharma.shuffler.activities.ViewSongActivity">
 
     <RelativeLayout
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_bar_height"
-        android:background="@color/colorDark">
+        android:layout_height="@dimen/toolbar_bar_height">
 
         <ImageView
             android:id="@+id/ivBackButton"
@@ -65,7 +67,6 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/bottomLayout"
         android:layout_below="@+id/headerLayout"
-        android:background="@color/colorDark"
         android:clipToPadding="false"
         android:paddingBottom="@dimen/_6sdp"
         android:paddingLeft="@dimen/_30sdp"
@@ -79,7 +80,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:background="@color/colorDark"
         android:orientation="vertical"
         android:paddingBottom="@dimen/_42sdp"
         android:paddingTop="@dimen/_6sdp">
@@ -154,7 +154,8 @@
                 android:paddingTop="@dimen/_12sdp"
                 android:text="@string/time"
                 android:textColor="@color/white"
-                app:typeface="@string/Font_Montserrat_Light" />
+                android:textSize="@dimen/each_song_artist_text_size"
+                app:typeface="@string/Font_Montserrat_Regular" />
 
             <SeekBar
                 android:id="@+id/seekBar"
@@ -163,7 +164,8 @@
                 android:layout_gravity="center"
                 android:layout_weight="50"
                 android:padding="@dimen/_3sdp"
-                android:progress="50" />
+                android:progress="50"
+                android:theme="@style/SeekBar" />
 
 
             <com.example.anujsharma.shuffler.fonts.TypefaceTextView
@@ -176,7 +178,8 @@
                 android:paddingTop="@dimen/_12sdp"
                 android:text="@string/time"
                 android:textColor="@color/white"
-                app:typeface="@string/Font_Montserrat_Light" />
+                android:textSize="@dimen/each_song_artist_text_size"
+                app:typeface="@string/Font_Montserrat_Regular" />
         </LinearLayout>
 
 

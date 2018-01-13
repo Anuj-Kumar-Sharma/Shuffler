@@ -83,12 +83,14 @@ public class SearchSongRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         if (position < FOOTER_PLAYLIST && hasPlaylistHeader) return TYPE_PLAYLIST;
         if (position == FOOTER_PLAYLIST && hasPlaylistFooter) return TYPE_FOOTER;
 
+
         return TYPE_HEADER;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View view;
+
         switch (viewType) {
             case TYPE_HEADER:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_song_header, parent, false);
@@ -99,14 +101,6 @@ public class SearchSongRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 songFooterViewHolder.footerText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        /*switch (songFooterViewHolder.getAdapterPosition()) {
-                            case FOOTER_TRACK:
-                                itemClickListener.onItemClick(v, songFooterViewHolder.getAdapterPosition(), Constants.SEE_ALL_SONGS_CLICKED);
-                                break;
-                            case 11:
-                                itemClickListener.onItemClick(v, songFooterViewHolder.getAdapterPosition(), Constants.SEE_ALL_USERS_CLICKED);
-                                break;
-                        }*/
                         if (songFooterViewHolder.getAdapterPosition() == FOOTER_TRACK && hasTrackFooter) {
                             itemClickListener.onItemClick(v, songFooterViewHolder.getAdapterPosition(), Constants.SEE_ALL_SONGS_CLICKED);
                         } else if (songFooterViewHolder.getAdapterPosition() == FOOTER_USER && hasUsersFooter) {
@@ -175,12 +169,13 @@ public class SearchSongRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 });
                 return playlistViewHolder;
         }
+
         return null;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        int index;
+
         switch (holder.getItemViewType()) {
             case TYPE_TRACK:
                 Song song = null;
@@ -188,7 +183,9 @@ public class SearchSongRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 else break;
                 EachSongViewHolder eachSongViewHolder = (EachSongViewHolder) holder;
                 eachSongViewHolder.songName.setText(song.getTitle());
-                eachSongViewHolder.artistName.setText(song.getUser().getUsername());
+                if (song.getUser() != null)
+                    eachSongViewHolder.artistName.setText(song.getUser().getUsername());
+                else eachSongViewHolder.artistName.setText(R.string.unknown_artist);
                 String likes = Utilities.formatInteger(song.getLikesCount());
                 eachSongViewHolder.likesCount.setText(likes);
                 String playbacks = Utilities.formatInteger(song.getPlaybackCount());
@@ -283,7 +280,8 @@ public class SearchSongRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
 
     @Override
     public int getItemCount() {
-        return FOOTER_PLAYLIST + 1;
+        if (hasPlaylistFooter) return FOOTER_PLAYLIST + 1;
+        else return 0;
     }
 
     public void changeSongData(List<Song> songs) {
@@ -291,7 +289,7 @@ public class SearchSongRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         hasTrackHeader = songs.size() > 0;
         if (hasTrackHeader) FOOTER_TRACK = 1 + songs.size();
         else FOOTER_TRACK = songs.size();
-        hasTrackFooter = songs.size() == 4;
+        hasTrackFooter = songs.size() == 4 && hasTrackHeader;
         this.notifyItemRangeChanged(HEADER_TRACK, FOOTER_TRACK);
     }
 
@@ -305,7 +303,7 @@ public class SearchSongRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         }
         if (hasUserHeader) FOOTER_USER = HEADER_USER + users.size() + 1;
         else FOOTER_USER = HEADER_USER;
-        hasUsersFooter = users.size() == 4;
+        hasUsersFooter = users.size() == 4 && hasUserHeader;
         this.notifyItemRangeChanged(HEADER_USER, FOOTER_USER - HEADER_USER + 1);
     }
 
@@ -319,7 +317,7 @@ public class SearchSongRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         }
         if (hasPlaylistHeader) FOOTER_PLAYLIST = HEADER_PLAYLIST + playlists.size() + 1;
         else FOOTER_PLAYLIST = HEADER_PLAYLIST;
-        hasPlaylistFooter = playlists.size() == 4;
+        hasPlaylistFooter = playlists.size() == 4 && hasPlaylistHeader;
         this.notifyItemRangeChanged(HEADER_PLAYLIST, FOOTER_PLAYLIST - HEADER_PLAYLIST + 1);
     }
 
