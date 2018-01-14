@@ -56,4 +56,12 @@ public class Constants {
     public static final int CLEAR_HISTORY_CLICKED = 22;
     public static final int HISTORY_LAYOUT_CLICKED = 23;
     public static final int HISTORY_CROSS_CLICKED = 24;
+
+    //service constants
+    public static final int MUSIC_PLAYED = 27;
+    public static final int MUSIC_PAUSED = 28;
+    public static final int MUSIC_STARTED = 29;
+    public static final int MUSIC_ENDED = 30;
+    public static final int MUSIC_LOADED = 31;
+    public static String IS_PLAYING = "isPlaying";
 }

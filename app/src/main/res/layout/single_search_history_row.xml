@@ -54,6 +54,7 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:padding="@dimen/_6sdp"
+        android:tint="@color/color_unselected"
         app:srcCompat="@drawable/ic_cross_out" />
 
 </LinearLayout>

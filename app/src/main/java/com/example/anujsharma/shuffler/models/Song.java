@@ -65,6 +65,7 @@ public class Song implements Parcelable {
             this.likesCount = song.has("likes_count") ? song.getInt("likes_count") : 0;
             this.favoritngsCount = song.has("favoritings_count") ? song.getInt("favoritings_count") : 0;
             this.user = new User(song.getJSONObject("user"));
+            this.artist = this.user.getUsername();
         } catch (JSONException e) {
             e.printStackTrace();
         }

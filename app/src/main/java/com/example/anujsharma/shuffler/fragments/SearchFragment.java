@@ -102,9 +102,8 @@ public class SearchFragment extends Fragment implements RequestCallback {
                 Bundle bundle;
                 switch (check) {
                     case Constants.EACH_SONG_LAYOUT_CLICKED:
-                        ((MainActivity) getActivity()).playSongInMainActivity(song);
                         Playlist playlist = new Playlist(songs, etSearch.getText().toString());
-                        ((MainActivity) getActivity()).modifyCurrentSongList(playlist);
+                        ((MainActivity) getActivity()).playSongInMainActivity(position, playlist);
                         long added = myDatabaseAdapter.addToHistory(new HybridModel(Constants.TYPE_TRACK, song.getId(),
                                 song.getSongArtwork(), song.getTitle(), song.getUser().getUsername()));
                         Log.d("TAG", "added " + added);
@@ -307,7 +306,7 @@ public class SearchFragment extends Fragment implements RequestCallback {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                performSearch();
+                performSearch();
             }
 
             @Override
@@ -381,7 +380,7 @@ public class SearchFragment extends Fragment implements RequestCallback {
                     if (songs.size() > 4) {
                         changeSelectedPosition(Utilities.getSelectedPosition(context, songs.subList(0, 4), 1));
                         searchSongRecyclerAdapter.changeSongData(songs.subList(0, 4));
-                    } else if (songs.size() > 0) {
+                    } else {
                         changeSelectedPosition(Utilities.getSelectedPosition(context, songs, 1));
                         searchSongRecyclerAdapter.changeSongData(songs);
                     }
@@ -402,7 +401,7 @@ public class SearchFragment extends Fragment implements RequestCallback {
                     });
                     if (users.size() > 4) {
                         searchSongRecyclerAdapter.changeUserData(users.subList(0, 4));
-                    } else if (users.size() > 0) {
+                    } else {
                         searchSongRecyclerAdapter.changeUserData(users);
                     }
                     playlistsDao.getPlaylistsWithQuery(etSearch.getText().toString(), 20);
@@ -422,7 +421,7 @@ public class SearchFragment extends Fragment implements RequestCallback {
                     });
                     if (playlists.size() > 4) {
                         searchSongRecyclerAdapter.changePlaylistData(playlists.subList(0, 4));
-                    } else if (playlists.size() > 0) {
+                    } else {
                         searchSongRecyclerAdapter.changePlaylistData(playlists);
                     }
                 }
@@ -437,11 +436,10 @@ public class SearchFragment extends Fragment implements RequestCallback {
             case Constants.SEARCH_SONG_WITH_ID:
                 Song song = (Song) object;
                 if ((getActivity()) != null && song != null) {
-                    ((MainActivity) getActivity()).playSongInMainActivity(song);
                     ArrayList<Song> songs = new ArrayList<>();
                     songs.add(song);
                     Playlist playlist = new Playlist(songs, "History");
-                    ((MainActivity) getActivity()).modifyCurrentSongList(playlist);
+                    ((MainActivity) getActivity()).playSongInMainActivity(0, playlist);
                 }
                 break;
             case Constants.SEARCH_USER_WITH_ID:

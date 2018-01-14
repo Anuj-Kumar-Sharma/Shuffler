@@ -31,9 +31,10 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlwaysCollapsed">
 
                 <LinearLayout
+                    android:id="@+id/llUserPage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorDark"
+                    android:background="@color/transparent_black"
                     android:orientation="vertical"
                     app:layout_collapseMode="parallax">
 
@@ -71,12 +72,6 @@
                 </LinearLayout>
 
             </android.support.design.widget.CollapsingToolbarLayout>
-
-            <View
-                android:id="@+id/view"
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/colorPrimary" />
 
         </android.support.design.widget.AppBarLayout>
 

@@ -47,8 +47,8 @@
             android:padding="@dimen/_3sdp"
             android:text="@string/playing_from_playlist"
             android:textColor="@color/white"
-            android:textSize="@dimen/feed_bottom_text_size"
-            app:typeface="@string/Font_Montserrat_SemiBold" />
+            android:textSize="@dimen/each_song_artist_text_size"
+            app:typeface="@string/Font_Montserrat_Regular" />
 
         <ImageView
             android:id="@+id/ivShowPlaylist"
@@ -109,7 +109,9 @@
                     android:id="@+id/tvSongName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
                     android:gravity="center"
+                    android:maxLines="1"
                     android:padding="@dimen/_6sdp"
                     android:text="@string/dummy_song_name"
                     android:textColor="@color/white"
@@ -120,7 +122,9 @@
                     android:id="@+id/tvArtistName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
                     android:gravity="center"
+                    android:maxLines="1"
                     android:text="@string/dummy_song_artist"
                     android:textColor="@color/color_unselected"
                     android:textSize="@dimen/each_song_artist_text_size"

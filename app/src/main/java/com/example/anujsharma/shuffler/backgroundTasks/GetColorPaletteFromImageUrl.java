@@ -7,7 +7,6 @@ import android.support.v7.graphics.Palette;
 import android.util.Log;
 
 import com.bumptech.glide.Glide;
-import com.example.anujsharma.shuffler.activities.ViewSongActivity;
 
 import java.util.concurrent.ExecutionException;
 
@@ -19,10 +18,12 @@ public class GetColorPaletteFromImageUrl extends AsyncTask<String, Void, Palette
 
     private String TAG = "TAG";
     private Bitmap theBitmap;
-    private ViewSongActivity viewSongActivity;
+    private Context context;
+    private PaletteCallback paletteCallback;
 
-    public GetColorPaletteFromImageUrl(Context context) {
-        viewSongActivity = (ViewSongActivity) context;
+    public GetColorPaletteFromImageUrl(Context context, PaletteCallback paletteCallback) {
+        this.context = context;
+        this.paletteCallback = paletteCallback;
     }
 
     @Override
@@ -31,7 +32,7 @@ public class GetColorPaletteFromImageUrl extends AsyncTask<String, Void, Palette
 
         try {
             theBitmap = Glide.
-                    with(viewSongActivity).
+                    with(context).
                     load(url).
                     asBitmap().
                     into(-1, -1).
@@ -50,9 +51,10 @@ public class GetColorPaletteFromImageUrl extends AsyncTask<String, Void, Palette
     protected void onPostExecute(Palette palette) {
         super.onPostExecute(palette);
 
-        if (palette != null)
-            viewSongActivity.changeBackground(palette.getDarkMutedColor(0xFF616261));
-        else
-            viewSongActivity.changeBackground(0xFF616261);
+        paletteCallback.onPostExecute(palette);
+    }
+
+    public interface PaletteCallback {
+        void onPostExecute(Palette palette);
     }
 }

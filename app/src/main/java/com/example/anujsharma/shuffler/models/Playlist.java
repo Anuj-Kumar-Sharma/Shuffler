@@ -62,6 +62,7 @@ public class Playlist implements Parcelable {
     public Playlist(List<Song> songs, String type) {
         this.type = type;
         this.songs = songs;
+        this.title = type;
     }
 
     protected Playlist(Parcel in) {

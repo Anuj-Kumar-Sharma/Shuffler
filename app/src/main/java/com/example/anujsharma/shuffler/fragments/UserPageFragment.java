@@ -3,17 +3,20 @@ package com.example.anujsharma.shuffler.fragments;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -23,6 +26,7 @@ import com.example.anujsharma.shuffler.R;
 import com.example.anujsharma.shuffler.activities.MainActivity;
 import com.example.anujsharma.shuffler.adapters.SeeAllRecyclerViewAdapter;
 import com.example.anujsharma.shuffler.adapters.UserPageRecyclerViewAdapter;
+import com.example.anujsharma.shuffler.backgroundTasks.GetColorPaletteFromImageUrl;
 import com.example.anujsharma.shuffler.dao.PlaylistsDao;
 import com.example.anujsharma.shuffler.dao.TracksDao;
 import com.example.anujsharma.shuffler.dao.UsersDao;
@@ -52,6 +56,7 @@ public class UserPageFragment extends Fragment implements RequestCallback {
     private TextView tvHeaderUserName, tvuserName, tvFollowersCount;
     private RecyclerView rvUserRecyclerView;
     private UserPageRecyclerViewAdapter userPageRecyclerViewAdapter;
+    private LinearLayout llUserPage;
     private SeeAllRecyclerViewAdapter seeAllRecyclerViewAdapter;
     private LinearLayoutManager linearLayoutManager;
     private User currentUser;
@@ -60,6 +65,8 @@ public class UserPageFragment extends Fragment implements RequestCallback {
     private int currentSongIndex;
     private SharedPreference pref;
     private int TYPE;
+    private GetColorPaletteFromImageUrl getColorPaletteFromImageUrl;
+    private GradientDrawable gd;
 
     public UserPageFragment() {
         // Required empty public constructor
@@ -88,7 +95,8 @@ public class UserPageFragment extends Fragment implements RequestCallback {
                     public void onItemClick(View view, int position, int check) {
                         switch (check) {
                             case Constants.EACH_SONG_LAYOUT_CLICKED:
-                                ((MainActivity) getActivity()).playSongInMainActivity(songs.get(position));
+                                Playlist playlist = new Playlist(songs, currentUser.getUsername());
+                                ((MainActivity) getActivity()).playSongInMainActivity(position, playlist);
                                 changeSelectedPosition(position + 1);
                                 break;
                             case Constants.EACH_SONG_MENU_CLICKED:
@@ -105,7 +113,8 @@ public class UserPageFragment extends Fragment implements RequestCallback {
                     public void onItemClick(View view, int position, int check) {
                         switch (check) {
                             case Constants.EACH_SONG_LAYOUT_CLICKED:
-                                ((MainActivity) getActivity()).playSongInMainActivity(songs.get(position));
+                                Playlist playlist = new Playlist(songs, currentPlaylist.getTitle());
+                                ((MainActivity) getActivity()).playSongInMainActivity(position, playlist);
                                 changeSelectedPosition(position);
                                 break;
                             case Constants.EACH_SONG_MENU_CLICKED:
@@ -145,8 +154,21 @@ public class UserPageFragment extends Fragment implements RequestCallback {
         tvHeaderUserName = view.findViewById(R.id.tvHeaderUserName);
         tvFollowersCount = view.findViewById(R.id.userFollowers);
         rvUserRecyclerView = view.findViewById(R.id.userRecyclerView);
+        llUserPage = view.findViewById(R.id.llUserPage);
+
         linearLayoutManager = new LinearLayoutManager(context);
         rvUserRecyclerView.setLayoutManager(linearLayoutManager);
+
+        gd = new GradientDrawable();
+        gd.setOrientation(GradientDrawable.Orientation.TOP_BOTTOM);
+
+        getColorPaletteFromImageUrl = new GetColorPaletteFromImageUrl(context, new GetColorPaletteFromImageUrl.PaletteCallback() {
+            @Override
+            public void onPostExecute(Palette palette) {
+                if (palette != null) changeBackground(palette.getDarkMutedColor(0xFF616261));
+                else changeBackground(0xFF616261);
+            }
+        });
 
         switch (TYPE) {
             case Constants.TYPE_USER:
@@ -166,7 +188,15 @@ public class UserPageFragment extends Fragment implements RequestCallback {
 
     }
 
+    public void changeBackground(int color) {
+        gd.setColors(new int[]{color, context.getResources().getColor(R.color.colorDark)});
+        llUserPage.setBackground(gd);
+    }
+
     private void initialisePlaylist() {
+
+        getColorPaletteFromImageUrl.execute(currentPlaylist.getArtworkUrl());
+
         tvuserName.setText(currentPlaylist.getTitle());
         tvHeaderUserName.setText(currentPlaylist.getTitle());
         String followersCount = Utilities.formatIntegerWithCommas(currentPlaylist.getLikesCount(), " LIKES");
@@ -181,6 +211,9 @@ public class UserPageFragment extends Fragment implements RequestCallback {
     }
 
     private void initializeUser() {
+
+        getColorPaletteFromImageUrl.execute(currentUser.getUserAvatar());
+
         tvuserName.setText(currentUser.getUsername());
         tvHeaderUserName.setText(currentUser.getUsername());
         String followersCount = Utilities.formatIntegerWithCommas(currentUser.getFollowersCount(), " FOLLOWERS");
@@ -212,7 +245,8 @@ public class UserPageFragment extends Fragment implements RequestCallback {
             case Constants.SEARCH_SONGS_WITH_USER_ID:
                 if (status) {
                     songs.clear();
-                    songs.addAll(list);
+                    if (list != null) songs.addAll(list);
+                    else break;
                     Collections.sort(songs, new Comparator<Song>() {
                         @Override
                         public int compare(Song o1, Song o2) {
@@ -233,7 +267,8 @@ public class UserPageFragment extends Fragment implements RequestCallback {
             case Constants.SEARCH_SONG_WITH_PLAYLIST_ID:
                 if (status) {
                     songs.clear();
-                    songs.addAll(list);
+                    if (list != null) songs.addAll(list);
+                    else break;
                     /*Collections.sort(songs, new Comparator<Song>() {
                         @Override
                         public int compare(Song o1, Song o2) {

@@ -1,13 +1,14 @@
 package com.example.anujsharma.shuffler.activities;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -28,12 +29,12 @@ import com.example.anujsharma.shuffler.fragments.SearchFragment;
 import com.example.anujsharma.shuffler.fragments.YourLibraryFragment;
 import com.example.anujsharma.shuffler.models.Playlist;
 import com.example.anujsharma.shuffler.models.Song;
+import com.example.anujsharma.shuffler.services.MusicService;
 import com.example.anujsharma.shuffler.utilities.Constants;
 import com.example.anujsharma.shuffler.utilities.SharedPreference;
 import com.example.anujsharma.shuffler.volley.RequestCallback;
 import com.example.anujsharma.shuffler.volley.Urls;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements RequestCallback {
@@ -48,22 +49,64 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
     private HomeFragment homeFragment;
     private SearchFragment searchFragment;
     private YourLibraryFragment yourLibraryFragment;
-    /*private RecyclerView mainRecyclerView;
-    private LinearLayoutManager layoutManager;
-    private MainRecyclerViewAdapter mainRecyclerViewAdapter;
-    private ArrayList<File> songsList;
-    private FetchSongFilesTask fetchSongFilesTask;*/
-    private MediaPlayer mediaPlayer;
+    //    private MediaPlayer mediaPlayer;
     private Context context;
     private ProgressBar mainSongLoader;
     private TextView tvHome, tvSearch, tvMyProfile, tvSongName;
     private ImageView ivPlay, ivNext, ivFullView;
-
     private TracksDao tracksDao;
-    private Song currentPlayingSong;
+
+    private int currentSongPosition;
     private Playlist currentPlaylist;
+    //service
+    private MusicService musicSrv;
     private Intent playIntent;
-    private boolean isMusicPlaying = false;
+    //binding
+    private boolean musicBound = false;
+    //connect to the service
+    private ServiceConnection musicConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MusicService.MusicBinder binder = (MusicService.MusicBinder) service;
+            //get service
+            musicSrv = binder.getService();
+            musicBound = true;
+            musicSrv.setCallbacks(new MusicService.MusicServiceInterface() {
+                @Override
+                public void onMusicDisturbed(int state, Song song) {
+                    switch (state) {
+                        case Constants.MUSIC_STARTED:
+                            tvSongName.setText(song.getTitle());
+                            ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
+                            break;
+                        case Constants.MUSIC_PLAYED:
+                            ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
+                            break;
+                        case Constants.MUSIC_PAUSED:
+                            ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
+                            break;
+                        case Constants.MUSIC_ENDED:
+
+                            break;
+                        case Constants.MUSIC_LOADED:
+
+                            break;
+                    }
+                }
+
+                @Override
+                public void onSongChanged(int newPosition) {
+                    currentSongPosition = newPosition;
+                }
+            });
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            musicBound = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,28 +122,67 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (playIntent == null) {
+            playIntent = new Intent(getBaseContext(), MusicService.class);
+            bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
+            startService(playIntent);
+        }
+    }
+
+    public void playSongInMainActivity(int songPosition, Playlist playlist) {
+        Song song = playlist.getSongs().get(songPosition);
+        currentSongPosition = songPosition;
+        pref.setCurrentPlayingSong(song.getId());
+        tvSongName.setText(song.getTitle());
+        this.currentPlaylist = playlist;
+        String url = song.getStreamUrl() + "?client_id=" + Urls.CLIENT_ID;
+        pref.setCurrentPlayingSong(song.getId());
+        Log.d("TAG", "currently playing " + url);
+
+        musicSrv.setSongPosition(songPosition);
+        musicSrv.setSongs(playlist.getSongs());
+        musicSrv.startSong();
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopService(playIntent);
+        musicSrv = null;
+        super.onDestroy();
+        unbindService(musicConnection);
+    }
+
     private void initialiseListeners() {
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                togglePlay(mp);
-            }
-        });
 
         ivPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                togglePlay(mediaPlayer);
+                if (musicSrv.isPlaying()) {
+                    musicSrv.pausePlayer();
+                } else {
+                    musicSrv.go();
+                }
             }
         });
+
+        ivNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                musicSrv.playNext();
+            }
+        });
+
         ivFullView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (currentPlaylist != null) {
                     Intent intent = new Intent(context, ViewSongActivity.class);
                     intent.putExtra(Constants.PLAYLIST_MODEL_KEY, currentPlaylist);
-                    intent.putExtra(Constants.CURRENT_PLAYING_SONG_POSITION, 0);
+                    intent.putExtra(Constants.CURRENT_PLAYING_SONG_POSITION, currentSongPosition);
+                    intent.putExtra(Constants.IS_PLAYING, musicSrv.isPlaying());
                     context.startActivity(intent);
                 }
             }
@@ -112,7 +194,8 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
                 if (currentPlaylist != null) {
                     Intent intent = new Intent(context, ViewSongActivity.class);
                     intent.putExtra(Constants.PLAYLIST_MODEL_KEY, currentPlaylist);
-                    intent.putExtra(Constants.CURRENT_PLAYING_SONG_POSITION, 0);
+                    intent.putExtra(Constants.CURRENT_PLAYING_SONG_POSITION, currentSongPosition);
+                    intent.putExtra(Constants.IS_PLAYING, musicSrv.isPlaying());
                     context.startActivity(intent);
                 }
             }
@@ -127,7 +210,6 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         tvHome = findViewById(R.id.xtvHome);
         tvSearch = findViewById(R.id.xtvSearch);
         tvMyProfile = findViewById(R.id.xtvMyProfile);
-//        mainRecyclerView = (RecyclerView) findViewById(R.id.mainRecyclerView);
         tvSongName = findViewById(R.id.tvSongName);
         mainSongLoader = findViewById(R.id.pbLoadSong);
         tvSongName.setSelected(true);
@@ -135,7 +217,6 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         ivNext = findViewById(R.id.ivPlayNext);
         ivPlay = findViewById(R.id.ivPlaySong);
 
-        mediaPlayer = new MediaPlayer();
         tracksDao.getTrackWithId(String.valueOf(pref.getCurrentPlayingSong()));
     }
 
@@ -214,15 +295,6 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         }
     }
 
-   /* @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-        }
-    }*/
-
     public void mainStuff() {
         /*File rootFile = new File(Environment.getExternalStorageDirectory().getPath()*//* + "/SHAREit/files/audios/"*//*);
         fetchSongFilesTask = new FetchSongFilesTask(this);
@@ -235,44 +307,6 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         HomeFragment fragment = new HomeFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.mainFrameContainer, fragment, HOME_FRAGMENT)
                 .addToBackStack(null).commit();
-    }
-
-    public void playSongInMainActivity(Song song) {
-        currentPlayingSong = song;
-        pref.setCurrentPlayingSong(song.getId());
-        tvSongName.setText(song.getTitle());
-        mainSongLoader.setVisibility(View.VISIBLE);
-        ivFullView.setVisibility(View.GONE);
-        String url = song.getStreamUrl() + "?client_id=" + Urls.CLIENT_ID;
-        mediaPlayer.reset();
-        pref.setCurrentPlayingSong(song.getId());
-        Log.d("TAG", "currently playing " + url);
-
-        try {
-            mediaPlayer.setDataSource(url);
-            mediaPlayer.prepareAsync();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void togglePlay(MediaPlayer mp) {
-        if (isMusicPlaying) {
-            mp.stop();
-//            mp.reset();
-            ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
-            isMusicPlaying = false;
-        } else {
-            mainSongLoader.setVisibility(View.GONE);
-            ivFullView.setVisibility(View.VISIBLE);
-            mp.start();
-            isMusicPlaying = true;
-            ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
-        }
-    }
-
-    public void modifyCurrentSongList(Playlist playlist) {
-        this.currentPlaylist = playlist;
     }
 
     @SuppressLint("WrongConstant")
@@ -331,7 +365,7 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
     @Override
     protected void onStop() {
         super.onStop();
-        pref.setCurrentPlayingSong(currentPlayingSong.getId());
+        pref.setCurrentPlayingSong(currentPlaylist.getSongs().get(currentSongPosition).getId());
     }
 
     @Override
@@ -339,8 +373,8 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         switch (check) {
             case Constants.SEARCH_SONG_WITH_ID:
                 if (status) {
-                    currentPlayingSong = (Song) object;
-                    tvSongName.setText(currentPlayingSong.getTitle());
+                    /*currentPlayingSong = (Song) object;
+                    tvSongName.setText(currentPlayingSong.getTitle());*/
                 }
                 break;
         }
