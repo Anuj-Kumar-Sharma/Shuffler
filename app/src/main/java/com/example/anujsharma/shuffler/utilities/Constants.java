@@ -63,5 +63,8 @@ public class Constants {
     public static final int MUSIC_STARTED = 29;
     public static final int MUSIC_ENDED = 30;
     public static final int MUSIC_LOADED = 31;
-    public static String IS_PLAYING = "isPlaying";
+    public static final String IS_PLAYING = "isPlaying";
+
+    public static final String NOTIFICATION_SONG_CHANNEL_ID = "songChannelId";
+    public static final int NOTIFICATION_SONG_ID = 1;
 }

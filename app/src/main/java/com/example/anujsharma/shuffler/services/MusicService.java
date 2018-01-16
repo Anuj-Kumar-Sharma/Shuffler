@@ -3,6 +3,7 @@ package com.example.anujsharma.shuffler.services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
@@ -10,9 +11,14 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.anujsharma.shuffler.models.Song;
+import com.example.anujsharma.shuffler.receivers.NotificationGenerator;
 import com.example.anujsharma.shuffler.utilities.Constants;
 import com.example.anujsharma.shuffler.utilities.SharedPreference;
+import com.example.anujsharma.shuffler.utilities.Utilities;
 import com.example.anujsharma.shuffler.volley.Urls;
 
 import java.io.IOException;
@@ -32,6 +38,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     private SharedPreference pref;
     private Context context;
     private boolean shuffle;
+    private boolean repeat;
     private MusicServiceInterface musicServiceInterface;
     private ViewMusicInterface viewMusicInterface;
 
@@ -126,7 +133,10 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     }
 
     public void startSong() {
-        Song song = songs.get(songPosition);
+        final Song song = songs.get(songPosition);
+
+        showNotification(song);
+
         musicServiceInterface.onMusicDisturbed(Constants.MUSIC_LOADED, song);
         musicServiceInterface.onSongChanged(songPosition);
 
@@ -170,6 +180,24 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         return mp.isPlaying();
     }
 
+    public boolean isRepeat() {
+        return repeat;
+    }
+
+    public void setRepeat(boolean repeat) {
+        this.repeat = repeat;
+        pref.setIsRepeatOn(repeat);
+    }
+
+    public boolean isShuffle() {
+        return shuffle;
+    }
+
+    public void setShuffle(boolean shuffle) {
+        this.shuffle = shuffle;
+        pref.setIsShuffleOn(shuffle);
+    }
+
     public void pausePlayer() {
         mp.pause();
         musicServiceInterface.onMusicDisturbed(Constants.MUSIC_PAUSED, songs.get(songPosition));
@@ -193,7 +221,11 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     //skip to previous track
     public void playPrev() {
         songPosition--;
-        if (songPosition < 0) songPosition = songs.size() - 1;
+        if (songPosition < 0) {
+            if (repeat)
+                songPosition = songs.size() - 1;
+            else return;
+        }
         startSong();
     }
 
@@ -207,7 +239,11 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
             songPosn=newSong;*/
         } else {
             songPosition++;
-            if (songPosition >= songs.size()) songPosition = 0;
+            if (songPosition >= songs.size()) {
+                if (repeat)
+                    songPosition = 0;
+                else return;
+            }
         }
         startSong();
     }
@@ -220,6 +256,18 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     //toggle shuffle
     public void setShuffle() {
         shuffle = !shuffle;
+    }
+
+    private void showNotification(final Song song) {
+        Glide.with(context)
+                .load(Utilities.getLargeArtworkUrl(song.getSongArtwork()))
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        NotificationGenerator.showSongNotification(context, song.getTitle(), song.getArtist(), resource);
+                    }
+                });
     }
 
     public interface MusicServiceInterface {

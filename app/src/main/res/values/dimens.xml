@@ -10,6 +10,7 @@
     <dimen name="user_image_dimen">@dimen/_136sdp</dimen>
     <dimen name="playlist_image_dimen">@dimen/_54sdp</dimen>
     <dimen name="user_playlist_image_dimen">@dimen/_136sdp</dimen>
+    <dimen name="notification_song_height">64dp</dimen>
 
 
 </resources>

@@ -24,6 +24,7 @@ import com.example.anujsharma.shuffler.models.Playlist;
 import com.example.anujsharma.shuffler.models.Song;
 import com.example.anujsharma.shuffler.services.MusicService;
 import com.example.anujsharma.shuffler.utilities.Constants;
+import com.example.anujsharma.shuffler.utilities.SharedPreference;
 import com.example.anujsharma.shuffler.utilities.Utilities;
 import com.example.anujsharma.shuffler.utilities.ZoomOutPageTransformer;
 
@@ -49,6 +50,8 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
     private boolean musicBound;
     private Intent playIntent;
     private boolean isPlaying;
+    private SharedPreference pref;
+
     private ServiceConnection musicConnection = new ServiceConnection() {
 
         @Override
@@ -183,6 +186,7 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
 
     private void initialize() {
         context = this;
+        pref = new SharedPreference(context);
         ivBackButton = findViewById(R.id.ivBackButton);
         ivShowPlaylist = findViewById(R.id.ivShowPlaylist);
         ivAddToLibrary = findViewById(R.id.ivAddToLibrary);
@@ -209,6 +213,11 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
 
         if (isPlaying) ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
         else ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
+
+        if (pref.getIsRepeatOn())
+            ivRepeat.setColorFilter(context.getResources().getColor(R.color.colorAccent));
+        if (pref.getIsShuffleOn())
+            ivShuffle.setColorFilter(context.getResources().getColor(R.color.colorAccent));
 
         relativeLayout = findViewById(R.id.rlViewSongLayout);
         gd = new GradientDrawable();
@@ -244,7 +253,13 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
 
                 break;
             case R.id.ivShuffle:
-
+                if (musicService.isShuffle()) {
+                    ivShuffle.setColorFilter(context.getResources().getColor(R.color.white));
+                    musicService.setShuffle(false);
+                } else {
+                    ivShuffle.setColorFilter(context.getResources().getColor(R.color.colorAccent));
+                    musicService.setShuffle(true);
+                }
                 break;
             case R.id.ivPrevious:
                 if (songs != null && currentPlayingPosition - 1 >= 0) {
@@ -268,7 +283,13 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
                 musicService.playNext();
                 break;
             case R.id.ivRepeat:
-
+                if (musicService.isRepeat()) {
+                    ivRepeat.setColorFilter(context.getResources().getColor(R.color.white));
+                    musicService.setRepeat(false);
+                } else {
+                    ivRepeat.setColorFilter(context.getResources().getColor(R.color.colorAccent));
+                    musicService.setRepeat(true);
+                }
                 break;
         }
     }
