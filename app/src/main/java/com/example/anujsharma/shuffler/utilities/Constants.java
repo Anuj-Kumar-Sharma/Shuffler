@@ -57,7 +57,9 @@ public class Constants {
     public static final int HISTORY_LAYOUT_CLICKED = 23;
     public static final int HISTORY_CROSS_CLICKED = 24;
 
-    //service constants
+    public static final int YOUR_LIBRARY_TOP_CONTENT_CLICKED = 32;
+
+    //service constants;
     public static final int MUSIC_PLAYED = 27;
     public static final int MUSIC_PAUSED = 28;
     public static final int MUSIC_STARTED = 29;
@@ -67,4 +69,8 @@ public class Constants {
 
     public static final String NOTIFICATION_SONG_CHANNEL_ID = "songChannelId";
     public static final int NOTIFICATION_SONG_ID = 1;
+
+    public static final String CLICK_NEXT = "com.example.anujsharma.shuffler.utilities.nextClick";
+    public static final String CLICK_PREVIOUS = "com.example.anujsharma.shuffler.utilities.previousClick";
+    public static final String CLICK_PLAY_PAUSE = "com.example.anujsharma.shuffler.utilities.playPauseClick";
 }

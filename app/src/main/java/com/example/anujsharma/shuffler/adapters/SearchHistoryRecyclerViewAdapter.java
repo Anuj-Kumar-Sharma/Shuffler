@@ -71,10 +71,11 @@ public class SearchHistoryRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
             case TYPE_HISTORY_DATA:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_search_history_row, parent, false);
                 final SearchHistoryViewHolder searchHistoryViewHolder = new SearchHistoryViewHolder(view);
+                final View transitionView = searchHistoryViewHolder.ivTypeImage;
                 searchHistoryViewHolder.historyLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        itemClickListener.onItemClick(view, searchHistoryViewHolder.getAdapterPosition() - 1, Constants.HISTORY_LAYOUT_CLICKED);
+                        itemClickListener.onItemClick(transitionView, searchHistoryViewHolder.getAdapterPosition() - 1, Constants.HISTORY_LAYOUT_CLICKED);
                     }
                 });
                 searchHistoryViewHolder.ivTypeCross.setOnClickListener(new View.OnClickListener() {

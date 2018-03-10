@@ -1,16 +1,22 @@
 package com.example.anujsharma.shuffler.fragments;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.anujsharma.shuffler.R;
 import com.example.anujsharma.shuffler.activities.MainActivity;
+import com.example.anujsharma.shuffler.adapters.YourLibraryRecyclerViewAdapter;
+import com.example.anujsharma.shuffler.utilities.Constants;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,7 +24,10 @@ import com.example.anujsharma.shuffler.activities.MainActivity;
 public class YourLibraryFragment extends Fragment {
 
     private static final String MYPROFILEFRAGMENT = "myProfileFragment";
-    ImageView headerMyProfile;
+    private Context context;
+    private ImageView headerMyProfile;
+    private RecyclerView recyclerView;
+    private YourLibraryRecyclerViewAdapter recyclerViewAdapter;
 
     public YourLibraryFragment() {
         // Required empty public constructor
@@ -53,7 +62,33 @@ public class YourLibraryFragment extends Fragment {
     }
 
     public void initialise(View view) {
-        headerMyProfile = (ImageView) view.findViewById(R.id.ivHeaderProfile);
+        context = getContext();
+        headerMyProfile = view.findViewById(R.id.ivHeaderProfile);
+        recyclerView = view.findViewById(R.id.rvLibrary);
+        recyclerViewAdapter = new YourLibraryRecyclerViewAdapter(context, new YourLibraryRecyclerViewAdapter.ItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position, int check) {
+                switch (check) {
+                    case Constants.YOUR_LIBRARY_TOP_CONTENT_CLICKED:
+                        switch (position) {
+                            case 0: // playlists
+                                Toast.makeText(context, "sup", Toast.LENGTH_SHORT).show();
+                                break;
+                            case 1: // songs
+
+                                break;
+                            case 2: // artists
+
+                                break;
+                        }
+                        break;
+                }
+            }
+        });
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(recyclerViewAdapter);
     }
 
 }

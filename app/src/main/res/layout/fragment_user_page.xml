@@ -46,6 +46,7 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="@dimen/_12sdp"
                         android:scaleType="centerCrop"
+                        android:transitionName="@string/simple_image_transition"
                         app:srcCompat="@drawable/ic_profile" />
 
                     <com.example.anujsharma.shuffler.fonts.TypefaceTextView

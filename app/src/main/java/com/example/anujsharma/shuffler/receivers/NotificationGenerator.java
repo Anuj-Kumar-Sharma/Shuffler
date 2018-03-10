@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.anujsharma.shuffler.R;
@@ -19,25 +18,24 @@ import com.example.anujsharma.shuffler.utilities.Constants;
 
 public class NotificationGenerator {
 
+    static RemoteViews remoteViews;
+    static NotificationCompat.Builder notificationBuilder;
+    static NotificationManager notificationManager;
+
     public static void showSongNotification(Context context, String title, String artist, Bitmap bitmap) {
-        final RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_song);
+        remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_song);
 
         remoteViews.setTextViewText(R.id.tvNotificationSongTitle, title);
         remoteViews.setTextViewText(R.id.tvNotificationArtistName, artist);
-        /*Glide.with(context)
-                .load(Utilities.getLargeArtworkUrl(artworkUrl))
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        remoteViews.setImageViewBitmap(R.id.ivNotificationImage, resource);
-                    }
-                });*/
+        if (bitmap != null) {
+            remoteViews.setImageViewBitmap(R.id.ivNotificationImage, bitmap);
+        } else {
+            remoteViews.setImageViewResource(R.id.ivNotificationImage, R.drawable.ic_headphones);
+        }
 
-        remoteViews.setImageViewBitmap(R.id.ivNotificationImage, bitmap);
+        notificationBuilder = new NotificationCompat.Builder(context.getApplicationContext(), Constants.NOTIFICATION_SONG_CHANNEL_ID);
 
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context.getApplicationContext(), Constants.NOTIFICATION_SONG_CHANNEL_ID);
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Intent notifyIntent = new Intent(context, MainActivity.class);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -46,24 +44,36 @@ public class NotificationGenerator {
 
         notificationBuilder.setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.lg_shuffle)
-                .setAutoCancel(true)
                 .setContentTitle("Shuffler")
                 .setContentText("Song Notification")
                 .setContent(remoteViews);
 
-        Log.d("TAG", "notification");
+        Intent next = new Intent(Constants.CLICK_NEXT);
+        Intent previous = new Intent(Constants.CLICK_PREVIOUS);
+        Intent playPause = new Intent(Constants.CLICK_PLAY_PAUSE);
 
+        PendingIntent nextPendingIntent = PendingIntent.getBroadcast(context, 0, next, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setOnClickPendingIntent(R.id.ivNotificationNext, nextPendingIntent);
+
+        PendingIntent previousPendingIntent = PendingIntent.getBroadcast(context, 0, previous, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setOnClickPendingIntent(R.id.ivNotificationPrevious, previousPendingIntent);
+
+        PendingIntent playPendingIntent = PendingIntent.getBroadcast(context, 0, playPause, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setOnClickPendingIntent(R.id.ivNotificationPlay, playPendingIntent);
+        notificationBuilder.setOngoing(true);
         notificationManager.notify(Constants.NOTIFICATION_SONG_ID, notificationBuilder.build());
+    }
 
-        /*
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("notify_001",
-                    "Channel human readable title",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            mNotificationManager.createNotificationChannel(channel);
+    public static void updateView(boolean isPlaying) {
+        if (isPlaying) {
+            remoteViews.setImageViewResource(R.id.ivNotificationPlay, R.drawable.ic_pause);
+            notificationBuilder.setOngoing(true);
+        } else {
+            notificationBuilder.setOngoing(false);
+            remoteViews.setImageViewResource(R.id.ivNotificationPlay, R.drawable.ic_play);
         }
 
-        mNotificationManager.notify(Constants.NOTIFICATION_SONG_ID, mBuilder.build());
-*/
+        notificationBuilder.setContent(remoteViews);
+        notificationManager.notify(Constants.NOTIFICATION_SONG_ID, notificationBuilder.build());
     }
 }

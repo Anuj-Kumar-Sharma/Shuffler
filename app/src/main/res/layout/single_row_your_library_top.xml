@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rlYourLibrary"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorDark"
+    android:paddingEnd="@dimen/_6sdp"
+    android:paddingStart="@dimen/_6sdp"
+    android:paddingTop="@dimen/_6sdp">
+
+    <ImageView
+        android:id="@+id/ivYourLibraryRecyclerViewIcon"
+        android:layout_width="@dimen/your_library_icon_dimen"
+        android:layout_height="@dimen/your_library_icon_dimen"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:padding="@dimen/_6sdp" />
+
+    <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+        android:id="@+id/tvYourLibraryRecyclerViewText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/ivYourLibraryRecyclerViewIcon"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/ivYourLibraryRecyclerViewIcon"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:padding="@dimen/_6sdp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/top_header_text_size"
+        app:typeface="@string/Font_Montserrat_Regular" />
+
+</RelativeLayout>

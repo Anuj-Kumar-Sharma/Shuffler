@@ -4,7 +4,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -33,7 +32,6 @@ import java.util.List;
 public class ViewSongActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "TAG";
-    Bitmap theBitmap;
     private Context context;
     private ImageView ivBackButton, ivShowPlaylist, ivAddToLibrary, ivMenu, ivShuffle, ivPrevious, ivPlay, ivNext, ivRepeat;
     private TextView tvPlaylistName, tvSongName, tvArtistName, tvCurrentTime, tvDuration;
@@ -66,6 +64,8 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
                     switch (state) {
                         case Constants.MUSIC_STARTED:
                             ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
+                            seekBar.setEnabled(true);
+                            ivPlay.setClickable(true);
                             break;
                         case Constants.MUSIC_PLAYED:
                             ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
@@ -74,10 +74,18 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
                             ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
                             break;
                         case Constants.MUSIC_ENDED:
-
+                            ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
                             break;
                         case Constants.MUSIC_LOADED:
                             tvSongName.setText(song.getTitle());
+                            tvArtistName.setText(song.getArtist());
+                            tvDuration.setText(Utilities.formatTime(song.getDuration()));
+                            tvCurrentTime.setText(Utilities.formatTime(0));
+                            seekBar.setProgress(0);
+                            seekBar.setEnabled(false);
+                            ivPlay.setClickable(false);
+                            seekBar.setMax((int) (song.getDuration() / 100));
+                            ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
                             break;
                     }
                 }
@@ -86,6 +94,11 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
                 public void onSongChanged(int newPosition) {
                     currentPlayingPosition = newPosition;
                     viewPager.setCurrentItem(newPosition, true);
+                }
+
+                @Override
+                public void onMusicProgress(int position) {
+                    seekBar.setProgress(position);
                 }
             });
         }
@@ -126,9 +139,9 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         stopService(playIntent);
         musicService = null;
-        super.onDestroy();
         unbindService(musicConnection);
     }
 
@@ -136,7 +149,7 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
         GetColorPaletteFromImageUrl getColorPaletteFromImageUrl = new GetColorPaletteFromImageUrl(context, new GetColorPaletteFromImageUrl.PaletteCallback() {
             @Override
             public void onPostExecute(Palette palette) {
-                if (palette != null) changeBackground(palette.getDarkMutedColor(0xFF616261));
+                if (palette != null) changeBackground(palette.getDarkVibrantColor(0xFF616261));
                 else changeBackground(0xFF616261);
             }
         });
@@ -182,6 +195,26 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
 
             }
         });
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                if (musicService != null && b) {
+                    musicService.seek(i * 100);
+                }
+                tvCurrentTime.setText(Utilities.formatTime((long) i * 100));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                musicService.pausePlayer();
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                musicService.go();
+            }
+        });
     }
 
     private void initialize() {
@@ -204,15 +237,20 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
         seekBar = findViewById(R.id.seekBar);
         viewPager = findViewById(R.id.viewSongViewPager);
 
-        tvSongName.setText(songs.get(currentPlayingPosition).getTitle());
+        if (songs.get(currentPlayingPosition).getSongArtwork() != null)
+            changeBackground(songs.get(currentPlayingPosition).getSongArtwork());
+        else
+            changeBackground(0xFF616261);
 
+        tvSongName.setText(songs.get(currentPlayingPosition).getTitle());
+        tvSongName.setSelected(true);
         tvArtistName.setText(songs.get(currentPlayingPosition).getArtist());
-//        tvArtistName.setVisibility(View.GONE);
         tvDuration.setText(Utilities.formatTime(songs.get(currentPlayingPosition).getDuration()));
         tvPlaylistName.setText(currentPlaylist.getTitle());
 
         if (isPlaying) ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
         else ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
+        seekBar.setMax((int) (songs.get(currentPlayingPosition).getDuration() / 100));
 
         if (pref.getIsRepeatOn())
             ivRepeat.setColorFilter(context.getResources().getColor(R.color.colorAccent));
@@ -230,11 +268,10 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
         viewPager.setAdapter(seeAllViewPagerAdapter);
         viewPager.setCurrentItem(currentPlayingPosition);
 
-        if (songs.get(currentPlayingPosition).getSongArtwork() != null)
-            changeBackground(songs.get(currentPlayingPosition).getSongArtwork());
-        else
-            changeBackground(0xFF616261);
-
+        if (MainActivity.musicSrv.getState() == Constants.MUSIC_LOADED) {
+            seekBar.setEnabled(false);
+            ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
+        }
     }
 
     @Override
@@ -269,10 +306,12 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
                 musicService.playPrev();
                 break;
             case R.id.ivPlay:
-                if (musicService.isPlaying()) {
-                    musicService.pausePlayer();
-                } else {
-                    musicService.go();
+                if (musicService.getState() != Constants.MUSIC_LOADED) {
+                    if (musicService.isPlaying()) {
+                        musicService.pausePlayer();
+                    } else {
+                        musicService.go();
+                    }
                 }
                 break;
             case R.id.ivNext:

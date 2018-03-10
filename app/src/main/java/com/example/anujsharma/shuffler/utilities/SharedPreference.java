@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.anujsharma.shuffler.R;
+import com.example.anujsharma.shuffler.models.Playlist;
+import com.google.gson.Gson;
 
 /**
  * Created by anuj5 on 04-01-2018.
@@ -12,7 +14,9 @@ import com.example.anujsharma.shuffler.R;
 public class SharedPreference {
 
     public static final String CURRENT_PLAYING_SONG_ID = "currentPlayingSongId";
-    public static final String CURRENT_SONG_LIST = "currentSongList";
+    public static final String CURRENT_PLAYLIST = "currentSongList";
+    public static final String CURRENT_PLAYING_SONG_POSITION = "currentPlayingSongPosition";
+
     public static final String SHUFFLE_ON = "shuffleOn";
     public static final String REPEAT_ON = "repeatOn";
 
@@ -51,6 +55,30 @@ public class SharedPreference {
     public void setIsRepeatOn(boolean repeatOn) {
         SharedPreferences.Editor editor = pref.edit();
         editor.putBoolean(REPEAT_ON, repeatOn);
+        editor.apply();
+    }
+
+    public Playlist getCurrentPlaylist() {
+        String playlistJson = pref.getString(CURRENT_PLAYLIST, null);
+        Gson gson = new Gson();
+        return gson.fromJson(playlistJson, Playlist.class);
+    }
+
+    public void setCurrentPlaylist(Playlist playlist) {
+        Gson gson = new Gson();
+        String playlistJson = gson.toJson(playlist);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(CURRENT_PLAYLIST, playlistJson);
+        editor.apply();
+    }
+
+    public int getCurrentPlayingSongPosition() {
+        return pref.getInt(CURRENT_PLAYING_SONG_POSITION, 0);
+    }
+
+    public void setCurrentPlayingSongPosition(int position) {
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt(CURRENT_PLAYING_SONG_POSITION, position);
         editor.apply();
     }
 }

@@ -32,4 +32,8 @@
     <string name="clear_recent_searches">Clear recent searches</string>
     <string name="artist">Artist</string>
     <string name="playlist">Playlist</string>
+    <string name="artists">Artists</string>
+    <string name="playlists">Playlists</string>
+
+    <string name="simple_image_transition">simple_image_transition</string>
 </resources>

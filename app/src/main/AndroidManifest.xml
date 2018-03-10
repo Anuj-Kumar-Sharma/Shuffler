@@ -39,6 +39,14 @@
             android:name="com.example.anujsharma.shuffler.services.MusicService"
             android:enabled="true" />
 
+        <receiver android:name="com.example.anujsharma.shuffler.receivers.NotificationBroadcast">
+            <intent-filter>
+                <action android:name="com.example.anujsharma.shuffler.utilities.nextClick" />
+                <action android:name="com.example.anujsharma.shuffler.utilities.previousClick" />
+                <action android:name="com.example.anujsharma.shuffler.utilities.playPauseClick" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

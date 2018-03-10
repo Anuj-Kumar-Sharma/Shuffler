@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -55,6 +56,7 @@ import java.util.List;
 public class SearchFragment extends Fragment implements RequestCallback {
 
     public EditText etSearch;
+    private View transitionView;
     private TracksDao tracksDao;
     private UsersDao usersDao;
     private PlaylistsDao playlistsDao;
@@ -226,10 +228,11 @@ public class SearchFragment extends Fragment implements RequestCallback {
                                 tracksDao.getTrackWithId(String.valueOf(history.getId()));
                                 break;
                             case Constants.TYPE_USER:
+                                transitionView = view;
                                 usersDao.getUserWithId(String.valueOf(history.getId()));
                                 break;
                             case Constants.TYPE_PLAYLIST:
-
+                                transitionView = view;
                                 break;
                         }
                         break;
@@ -298,15 +301,22 @@ public class SearchFragment extends Fragment implements RequestCallback {
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (rvSearchResult.getAdapter() instanceof SearchHistoryRecyclerViewAdapter) {
+                /*if (rvSearchResult.getAdapter() instanceof SearchHistoryRecyclerViewAdapter) {
                     rvSearchResult.setAdapter(searchSongRecyclerAdapter);
                     Log.d("TAG", "changed to searchSong");
-                }
+                }*/
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                performSearch();
+//                performSearch();
+                if (charSequence.toString().isEmpty()) showHistory();
+                else {
+                    if (rvSearchResult.getAdapter() instanceof SearchHistoryRecyclerViewAdapter) {
+                        rvSearchResult.setAdapter(searchSongRecyclerAdapter);
+                        Log.d("TAG", "changed to searchSong");
+                    }
+                }
             }
 
             @Override
@@ -333,7 +343,7 @@ public class SearchFragment extends Fragment implements RequestCallback {
         searchHistoryRecyclerAdapter.updateHistory(myDatabaseAdapter.getHistroyList());
         rvSearchResult.setAdapter(searchHistoryRecyclerAdapter);
         rvSearchResult.clearFocus();
-        etSearch.requestFocus();
+//        etSearch.requestFocus();
         Log.d("TAG", "changed to searchHistory");
     }
 
@@ -367,6 +377,12 @@ public class SearchFragment extends Fragment implements RequestCallback {
             case Constants.SEARCH_SONGS_WITH_QUERY:
                 if (status) {
                     songs.clear();
+
+                    if (rvSearchResult.getAdapter() instanceof SearchHistoryRecyclerViewAdapter) {
+                        rvSearchResult.setAdapter(searchSongRecyclerAdapter);
+                        Log.d("TAG", "changed to searchSong");
+                    }
+
                     if (list != null) songs.addAll(list);
 //                    setBackground(songs.get(0).getSongArtwork());
                     Collections.sort(songs, new Comparator<Song>() {
@@ -450,7 +466,10 @@ public class SearchFragment extends Fragment implements RequestCallback {
                     bundle.putInt(Constants.TYPE, Constants.TYPE_USER);
                     bundle.putParcelable(Constants.USER_MODEL_KEY, user);
                     userPageFragment.setArguments(bundle);
-                    getFragmentManager().beginTransaction().replace(R.id.mainFrameContainer, userPageFragment, Constants.FRAGMENT_USER_PAGE)
+
+                    getFragmentManager().beginTransaction()
+                            .addSharedElement(transitionView, ViewCompat.getTransitionName(transitionView))
+                            .replace(R.id.mainFrameContainer, userPageFragment, Constants.FRAGMENT_USER_PAGE)
                             .addToBackStack(userPageFragment.getClass().getName()).commit();
                 }
                 break;

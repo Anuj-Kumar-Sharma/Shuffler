@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--Fifty Shades of Grey - Literally-->
 <resources>
     <color name="colorPrimary">#222326</color>
     <color name="colorPrimaryDark">#222326</color>
@@ -9,5 +9,6 @@
     <color name="color_unselected">#9A9CA0</color>
     <color name="color_editText">#434446</color>
     <color name="transparent_black">#d80a0a0a</color>
-    <color name="bottom_gradient">#e6121212</color>
+    <color name="bottom_gradient">#e6000000</color>
+    <color name="transparent_white">#96ffffff</color>
 </resources>

@@ -4,6 +4,7 @@ package com.example.anujsharma.shuffler.fragments;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,6 +85,10 @@ public class UserPageFragment extends Fragment implements RequestCallback {
         tracksDao = new TracksDao(context, this);
         usersDao = new UsersDao(context, this);
         playlistsDao = new PlaylistsDao(context, this);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setSharedElementEnterTransition(TransitionInflater.from(context).inflateTransition(android.R.transition.move));
+        }
 
         Bundle bundle = getArguments();
         TYPE = bundle.getInt(Constants.TYPE);
@@ -165,7 +171,7 @@ public class UserPageFragment extends Fragment implements RequestCallback {
         getColorPaletteFromImageUrl = new GetColorPaletteFromImageUrl(context, new GetColorPaletteFromImageUrl.PaletteCallback() {
             @Override
             public void onPostExecute(Palette palette) {
-                if (palette != null) changeBackground(palette.getDarkMutedColor(0xFF616261));
+                if (palette != null) changeBackground(palette.getDarkVibrantColor(0xFF616261));
                 else changeBackground(0xFF616261);
             }
         });

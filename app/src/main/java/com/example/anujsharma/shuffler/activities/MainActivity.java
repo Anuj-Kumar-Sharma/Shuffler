@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
     public static final String HOME_FRAGMENT = "homeFragment";
     public static final String SEARCH_FRAGMENT = "searchFragment";
     public static final String YOUR_LIBRARY_FRAGMENT = "yourLibraryFragment";
+    //service
+    public static MusicService musicSrv;
     private final int REQUEST_PERMS_CODE = 1;
     SharedPreference pref;
     private boolean initHomeFragment, initSearchFragment, initYourLibraryFragment;
@@ -52,14 +54,12 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
     //    private MediaPlayer mediaPlayer;
     private Context context;
     private ProgressBar mainSongLoader;
+    private View progressView;
     private TextView tvHome, tvSearch, tvMyProfile, tvSongName;
     private ImageView ivPlay, ivNext, ivFullView;
     private TracksDao tracksDao;
-
     private int currentSongPosition;
     private Playlist currentPlaylist;
-    //service
-    private MusicService musicSrv;
     private Intent playIntent;
     //binding
     private boolean musicBound = false;
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
                 public void onMusicDisturbed(int state, Song song) {
                     switch (state) {
                         case Constants.MUSIC_STARTED:
-                            tvSongName.setText(song.getTitle());
+                            ivPlay.setClickable(true);
                             ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
                             break;
                         case Constants.MUSIC_PLAYED:
@@ -87,10 +87,12 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
                             ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
                             break;
                         case Constants.MUSIC_ENDED:
-
+                            ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
                             break;
                         case Constants.MUSIC_LOADED:
-
+                            ivPlay.setClickable(false);
+                            tvSongName.setText(song.getTitle());
+                            ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
                             break;
                     }
                 }
@@ -98,6 +100,11 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
                 @Override
                 public void onSongChanged(int newPosition) {
                     currentSongPosition = newPosition;
+                }
+
+                @Override
+                public void onMusicProgress(int position) {
+                    progressView.getBackground().setLevel(position);
                 }
             });
         }
@@ -113,6 +120,13 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        if (playIntent == null) {
+            playIntent = new Intent(getBaseContext(), MusicService.class);
+            bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
+            startService(playIntent);
+        }
+
         initialise();
         initialiseListeners();
         if (hasPermissons()) {
@@ -122,24 +136,15 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (playIntent == null) {
-            playIntent = new Intent(getBaseContext(), MusicService.class);
-            bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
-            startService(playIntent);
-        }
-    }
-
     public void playSongInMainActivity(int songPosition, Playlist playlist) {
         Song song = playlist.getSongs().get(songPosition);
         currentSongPosition = songPosition;
         pref.setCurrentPlayingSong(song.getId());
+        pref.setCurrentPlaylist(playlist);
+        pref.setCurrentPlayingSongPosition(songPosition);
         tvSongName.setText(song.getTitle());
         this.currentPlaylist = playlist;
         String url = song.getStreamUrl() + "?client_id=" + Urls.CLIENT_ID;
-        pref.setCurrentPlayingSong(song.getId());
         Log.d("TAG", "currently playing " + url);
 
         musicSrv.setSongPosition(songPosition);
@@ -149,9 +154,9 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         stopService(playIntent);
         musicSrv = null;
-        super.onDestroy();
         unbindService(musicConnection);
     }
 
@@ -216,8 +221,14 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         ivFullView = findViewById(R.id.ivUpArrow);
         ivNext = findViewById(R.id.ivPlayNext);
         ivPlay = findViewById(R.id.ivPlaySong);
+        progressView = findViewById(R.id.progressView);
 
-        tracksDao.getTrackWithId(String.valueOf(pref.getCurrentPlayingSong()));
+        currentPlaylist = pref.getCurrentPlaylist();
+        currentSongPosition = pref.getCurrentPlayingSongPosition();
+        if (currentPlaylist != null) {
+            Song currentSong = currentPlaylist.getSongs().get(currentSongPosition);
+            tvSongName.setText(currentSong.getTitle());
+        }
     }
 
 
@@ -366,17 +377,10 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
     protected void onStop() {
         super.onStop();
         pref.setCurrentPlayingSong(currentPlaylist.getSongs().get(currentSongPosition).getId());
+        pref.setCurrentPlayingSongPosition(musicSrv.getSongPosition());
     }
 
     @Override
     public void onObjectRequestSuccessful(Object object, int check, boolean status) {
-        switch (check) {
-            case Constants.SEARCH_SONG_WITH_ID:
-                if (status) {
-                    /*currentPlayingSong = (Song) object;
-                    tvSongName.setText(currentPlayingSong.getTitle());*/
-                }
-                break;
-        }
     }
 }

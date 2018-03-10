@@ -3,7 +3,6 @@
     android:id="@+id/rlEachPlaylistLayout"
     android:layout_width="match_parent"
     android:layout_height="64dp"
-    android:background="#121212"
     android:orientation="horizontal"
     android:padding="6dp">
 
@@ -12,7 +11,9 @@
         android:layout_width="54dp"
         android:layout_height="54dp"
         android:layout_gravity="center"
-        android:padding="6dp" />
+        android:paddingBottom="4dp"
+        android:paddingRight="9dp"
+        android:paddingTop="4dp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -27,8 +28,10 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:padding="4dp"
-            android:textColor="@color/white"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:paddingTop="4dp"
+            android:textColor="@color/black"
             android:textSize="13sp" />
 
         <TextView
@@ -50,7 +53,10 @@
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_gravity="center"
-        android:src="@drawable/ic_previous" />
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_previous"
+        android:tint="@color/black" />
 
     <ImageView
         android:id="@+id/ivNotificationPlay"
@@ -58,14 +64,19 @@
         android:layout_height="36dp"
         android:layout_gravity="center"
         android:layout_margin="6dp"
-        android:src="@drawable/ic_play" />
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_pause"
+        android:tint="@color/black" />
 
     <ImageView
         android:id="@+id/ivNotificationNext"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_gravity="center"
-        android:layout_marginRight="@dimen/_6sdp"
-        android:src="@drawable/ic_next" />
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_next"
+        android:tint="@color/black" />
 
 </LinearLayout>
