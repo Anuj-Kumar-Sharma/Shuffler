@@ -41,6 +41,7 @@ import com.example.anujsharma.shuffler.models.Song;
 import com.example.anujsharma.shuffler.models.User;
 import com.example.anujsharma.shuffler.utilities.Constants;
 import com.example.anujsharma.shuffler.utilities.CustomLinearLayoutManager;
+import com.example.anujsharma.shuffler.utilities.DialogBoxes;
 import com.example.anujsharma.shuffler.utilities.SharedPreference;
 import com.example.anujsharma.shuffler.utilities.Utilities;
 import com.example.anujsharma.shuffler.volley.RequestCallback;
@@ -135,6 +136,9 @@ public class SearchFragment extends Fragment implements RequestCallback {
                                         return true;
                                     case R.id.popShare:
 
+                                        return true;
+                                    case R.id.popAddToPlaylist:
+                                        showAddToPlaylistDialog(song);
                                         return true;
                                 }
                                 return false;
@@ -244,6 +248,7 @@ public class SearchFragment extends Fragment implements RequestCallback {
             }
         });
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -497,5 +502,11 @@ public class SearchFragment extends Fragment implements RequestCallback {
         super.onStart();
         int newPos = Utilities.getSelectedPosition(context, songs, 1);
         changeSelectedPosition(newPos);
+    }
+
+    private void showAddToPlaylistDialog(Song song) {
+        View mView = getLayoutInflater().inflate(R.layout.dialog_add_song_to_playlist, null);
+        View createPlaylistView = getLayoutInflater().inflate(R.layout.create_playlist_dialog_layout, null);
+        DialogBoxes.showAddSongToPlaylistDialog(context, mView, createPlaylistView, song);
     }
 }

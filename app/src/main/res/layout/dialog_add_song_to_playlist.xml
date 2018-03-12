@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rlDialogAddToPlaylist"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:paddingBottom="@dimen/notification_song_height">
+
+    <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+        android:id="@+id/tvAddToPlaylistHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:padding="@dimen/_18sdp"
+        android:text="@string/add_to_playlist"
+        android:textColor="@color/white"
+        android:textSize="@dimen/top_footer_text_size"
+        app:typeface="@string/Font_Montserrat_Regular" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@id/tvAddToPlaylistHeader"
+        android:background="@color/color_unselected" />
+
+    <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+        android:id="@+id/tvDialogNewPlaylist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/view"
+        android:paddingBottom="@dimen/_12sdp"
+        android:paddingStart="@dimen/_18sdp"
+        android:paddingTop="@dimen/_12sdp"
+        android:text="@string/new_playlist"
+        android:textColor="@color/white"
+        android:textSize="@dimen/each_song_artist_text_size"
+        app:typeface="@string/Font_Montserrat_Regular" />
+
+    <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+        android:id="@+id/tvYourPlaylistsMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvDialogNewPlaylist"
+        android:layout_marginBottom="@dimen/_6sdp"
+        android:background="@color/color_unselected"
+        android:paddingBottom="@dimen/_3sdp"
+        android:paddingLeft="@dimen/_18sdp"
+        android:paddingTop="@dimen/_3sdp"
+        android:text="@string/your_playlists"
+        android:textColor="@color/black"
+        android:textSize="@dimen/feed_bottom_text_size"
+        app:typeface="@string/Font_Montserrat_Light" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvPlaylistsList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvYourPlaylistsMessage" />
+
+</RelativeLayout>

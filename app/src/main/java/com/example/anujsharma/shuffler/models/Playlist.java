@@ -34,6 +34,8 @@ public class Playlist implements Parcelable {
     private int track_count, likes_count;
     private List<Song> songs;
     private User user;
+    private boolean selfMade;
+
 
     public Playlist(JSONObject playlist) {
         try {
@@ -65,6 +67,14 @@ public class Playlist implements Parcelable {
         this.title = type;
     }
 
+    public Playlist(long playlist_id, String title, int track_count, String artwork_url) {
+        this.playlist_id = playlist_id;
+        this.title = title;
+        this.track_count = track_count;
+        this.artwork_url = artwork_url;
+        this.selfMade = true;
+    }
+
     protected Playlist(Parcel in) {
         playlist_id = in.readLong();
         duration = in.readLong();
@@ -76,6 +86,18 @@ public class Playlist implements Parcelable {
         track_count = in.readInt();
         songs = in.createTypedArrayList(Song.CREATOR);
         user = in.readParcelable(User.class.getClassLoader());
+    }
+
+    public boolean isSelfMade() {
+        return this.selfMade;
+    }
+
+    public void setArtwork_url(String artwork_url) {
+        this.artwork_url = artwork_url;
+    }
+
+    public void setTrack_count(int track_count) {
+        this.track_count = track_count;
     }
 
     public long getPlaylistId() {
@@ -102,6 +124,10 @@ public class Playlist implements Parcelable {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getArtworkUrl() {
         return artwork_url;
     }
@@ -118,12 +144,20 @@ public class Playlist implements Parcelable {
         return songs;
     }
 
+    public void setSongs(List<Song> songs) {
+        this.songs = songs;
+    }
+
     public User getUser() {
         return user;
     }
 
     public String getType() {
         return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override

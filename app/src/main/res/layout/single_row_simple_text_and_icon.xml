@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rlYourLibrary"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingEnd="@dimen/_18sdp"
+    android:paddingStart="@dimen/_6sdp">
+
+    <ImageView
+        android:id="@+id/ivYourLibraryRecyclerViewIcon"
+        android:layout_width="@dimen/simple_icon_size"
+        android:layout_height="@dimen/simple_icon_size"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        app:srcCompat="@drawable/ic_musical_note" />
+
+    <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+        android:id="@+id/tvYourLibraryRecyclerViewText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/ivYourLibraryRecyclerViewIcon"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/ivYourLibraryRecyclerViewIcon"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:textColor="@color/white"
+        android:textSize="@dimen/each_song_artist_text_size"
+        app:typeface="@string/Font_Montserrat_Regular" />
+
+</RelativeLayout>

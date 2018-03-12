@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rlCreatePlaylistDialogue"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:padding="@dimen/_6sdp">
+
+    <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+        android:id="@+id/tvCreatePlaylistMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:gravity="center_horizontal"
+        android:imeOptions="normal|actionUnspecified|actionDone"
+        android:padding="@dimen/_12sdp"
+        android:text="@string/create_playlist_message"
+        android:textColor="@color/white"
+        android:textSize="@dimen/top_header_text_size"
+        app:typeface="@string/Font_Montserrat_Regular" />
+
+    <com.example.anujsharma.shuffler.fonts.TypefaceEditText
+        android:id="@+id/etCreatePlaylist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvCreatePlaylistMessage"
+        android:layout_marginBottom="@dimen/_12sdp"
+        android:ellipsize="end"
+        android:hint="@string/create_playlist_hint_message"
+        android:inputType="textCapWords|textAutoComplete"
+        android:maxLines="1"
+        android:padding="@dimen/_12sdp"
+        android:scrollHorizontally="true"
+        android:textColor="@color/white"
+        android:textColorHint="@color/color_unselected"
+        android:textSize="@dimen/top_footer_text_size"
+        app:typeface="@string/Font_Montserrat_Light" />
+
+    <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+        android:id="@+id/tvCancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etCreatePlaylist"
+        android:layout_toStartOf="@+id/tvCreateButton"
+        android:padding="@dimen/_12sdp"
+        android:text="@string/cancel"
+        android:textColor="@color/color_unselected"
+        app:typeface="@string/Font_Montserrat_Light" />
+
+    <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+        android:id="@+id/tvCreateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tvCancelButton"
+        android:layout_alignBottom="@+id/tvCancelButton"
+        android:layout_alignEnd="@+id/tvCreatePlaylistMessage"
+        android:padding="@dimen/_12sdp"
+        android:text="@string/create"
+        android:textColor="@color/colorAccent"
+        app:typeface="@string/Font_Montserrat_Light" />
+
+</RelativeLayout>

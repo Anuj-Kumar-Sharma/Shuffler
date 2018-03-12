@@ -122,7 +122,10 @@ public class SeeAllRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 eachSongViewHolder.songName.setText(song.getTitle());
                 if (song.getUser() != null)
                     eachSongViewHolder.artistName.setText(song.getUser().getUsername());
-                else eachSongViewHolder.artistName.setText(R.string.unknown_artist);
+                else if (song.getArtist() == null || song.getArtist().isEmpty())
+                    eachSongViewHolder.artistName.setText(context.getResources().getString(R.string.unknown_artist));
+                else
+                    eachSongViewHolder.artistName.setText(song.getArtist());
                 String likes = "";
                 if (song.getLikesCount() == 0)
                     likes = Utilities.formatInteger(song.getFavoritngsCount());

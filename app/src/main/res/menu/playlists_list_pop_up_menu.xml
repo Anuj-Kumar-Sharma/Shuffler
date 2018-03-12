@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/popPlayAll"
+        android:title="@string/play_all" />
+
+    <item
+        android:id="@+id/popShare"
+        android:title="@string/share" />
+
+    <item
+        android:id="@+id/popRenamePlaylist"
+        android:title="@string/rename_playlist" />
+
+    <item
+        android:id="@+id/popDeletePlaylist"
+        android:title="@string/delete_playlist" />
+
+
+</menu>

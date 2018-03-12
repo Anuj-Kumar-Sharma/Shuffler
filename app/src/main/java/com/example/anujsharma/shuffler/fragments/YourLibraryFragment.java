@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.anujsharma.shuffler.R;
 import com.example.anujsharma.shuffler.activities.MainActivity;
@@ -24,6 +23,7 @@ import com.example.anujsharma.shuffler.utilities.Constants;
 public class YourLibraryFragment extends Fragment {
 
     private static final String MYPROFILEFRAGMENT = "myProfileFragment";
+    private static final String PLAYLISTSFRAGMENT = "playlistsListFragment";
     private Context context;
     private ImageView headerMyProfile;
     private RecyclerView recyclerView;
@@ -72,7 +72,9 @@ public class YourLibraryFragment extends Fragment {
                     case Constants.YOUR_LIBRARY_TOP_CONTENT_CLICKED:
                         switch (position) {
                             case 0: // playlists
-                                Toast.makeText(context, "sup", Toast.LENGTH_SHORT).show();
+                                PlaylistsListFragment playlistsListFragment = new PlaylistsListFragment();
+                                getFragmentManager().beginTransaction().replace(R.id.mainFrameContainer, playlistsListFragment, PLAYLISTSFRAGMENT)
+                                        .addToBackStack(playlistsListFragment.getClass().getName()).commit();
                                 break;
                             case 1: // songs
 

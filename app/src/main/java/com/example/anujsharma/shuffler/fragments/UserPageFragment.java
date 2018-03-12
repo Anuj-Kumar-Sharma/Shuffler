@@ -119,7 +119,9 @@ public class UserPageFragment extends Fragment implements RequestCallback {
                     public void onItemClick(View view, int position, int check) {
                         switch (check) {
                             case Constants.EACH_SONG_LAYOUT_CLICKED:
-                                Playlist playlist = new Playlist(songs, currentPlaylist.getTitle());
+                                Playlist playlist = currentPlaylist;
+                                if (!currentPlaylist.isSelfMade())
+                                    playlist = new Playlist(songs, currentPlaylist.getTitle());
                                 ((MainActivity) getActivity()).playSongInMainActivity(position, playlist);
                                 changeSelectedPosition(position);
                                 break;
@@ -201,7 +203,8 @@ public class UserPageFragment extends Fragment implements RequestCallback {
 
     private void initialisePlaylist() {
 
-        getColorPaletteFromImageUrl.execute(currentPlaylist.getArtworkUrl());
+        if (!currentPlaylist.getArtworkUrl().isEmpty())
+            getColorPaletteFromImageUrl.execute(currentPlaylist.getArtworkUrl());
 
         tvuserName.setText(currentPlaylist.getTitle());
         tvHeaderUserName.setText(currentPlaylist.getTitle());
@@ -213,7 +216,16 @@ public class UserPageFragment extends Fragment implements RequestCallback {
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(ivUserImage);
-        playlistsDao.getTracksFromPlaylistId(currentPlaylist.getPlaylistId());
+
+        if (!currentPlaylist.isSelfMade())
+            playlistsDao.getTracksFromPlaylistId(currentPlaylist.getPlaylistId());
+        else {
+            tvFollowersCount.setVisibility(View.GONE);
+            songs.clear();
+            songs = (ArrayList<Song>) currentPlaylist.getSongs();
+            changeSelectedPosition(Utilities.getSelectedPosition(context, songs, 0));
+            seeAllRecyclerViewAdapter.changeSongData(songs);
+        }
     }
 
     private void initializeUser() {

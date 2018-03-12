@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rlDeletePlaylistConfirmation"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:padding="@dimen/_6sdp">
+
+    <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+        android:id="@+id/tvConfirmationMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="@dimen/_6sdp"
+        android:padding="@dimen/_6sdp"
+        android:text="Are you sure you want to delete the playlist?"
+        android:textColor="@color/white"
+        app:typeface="@string/Font_Montserrat_Regular" />
+
+    <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+        android:id="@+id/tvCancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tvDeleteButton"
+        android:layout_alignBottom="@+id/tvDeleteButton"
+        android:layout_toStartOf="@+id/tvDeleteButton"
+        android:padding="@dimen/_12sdp"
+        android:text="@string/cancel"
+        android:textColor="@color/color_unselected"
+        app:typeface="@string/Font_Montserrat_Light" />
+
+    <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+        android:id="@+id/tvDeleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/tvConfirmationMessage"
+        android:padding="@dimen/_12sdp"
+        android:text="@string/delete"
+        android:textColor="@color/red"
+        app:typeface="@string/Font_Montserrat_Light" />
+
+</RelativeLayout>

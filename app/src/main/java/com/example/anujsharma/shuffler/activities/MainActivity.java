@@ -152,6 +152,13 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         musicSrv.startSong();
     }
 
+    public void updatePlaylistInMainActivity(Playlist playlist) {
+        if (playlist.getPlaylistId() == currentPlaylist.getPlaylistId()) {
+            currentPlaylist = playlist;
+            pref.setCurrentPlaylist(playlist);
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

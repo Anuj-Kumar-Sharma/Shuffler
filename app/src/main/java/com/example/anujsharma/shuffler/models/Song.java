@@ -20,7 +20,7 @@ public class Song implements Parcelable {
             return new Song[size];
         }
     };
-    private long id, duration;
+    private long id, duration, user_id;
     private String title, artist, genre, album;
     private File songFile;
     private String permalink;
@@ -35,7 +35,6 @@ public class Song implements Parcelable {
         this.title = title;
         this.artist = artist;
         this.genre = genre;
-        this.permalink = permalink;
         this.songArtwork = songArtwork;
         this.streamUrl = streamUrl;
         this.playbackCount = playbackCount;
@@ -52,9 +51,23 @@ public class Song implements Parcelable {
         this.songFile = songFile;
     }
 
+    public Song(long song_id, long user_id, long duration, String title, String artistName, String genre, String artworkUrl, String streamUrl, int playbackCount, int likesCount) {
+        this.id = song_id;
+        this.user_id = user_id;
+        this.duration = duration;
+        this.title = title;
+        this.artist = artistName;
+        this.genre = genre;
+        this.songArtwork = artworkUrl;
+        this.streamUrl = streamUrl;
+        this.playbackCount = playbackCount;
+        this.likesCount = likesCount;
+    }
+
     public Song(JSONObject song) {
         try {
             this.id = song.getLong("id");
+            this.user_id = song.getLong("user_id");
             this.duration = song.getLong("duration");
             this.title = song.getString("title").trim();
             this.genre = song.getString("genre").trim();
@@ -73,6 +86,7 @@ public class Song implements Parcelable {
 
     protected Song(Parcel in) {
         id = in.readLong();
+        user_id = in.readLong();
         duration = in.readLong();
         title = in.readString();
         artist = in.readString();
@@ -84,6 +98,10 @@ public class Song implements Parcelable {
         playbackCount = in.readInt();
         likesCount = in.readInt();
         favoritngsCount = in.readInt();
+    }
+
+    public long getUser_id() {
+        return user_id;
     }
 
     public User getUser() {
@@ -150,6 +168,7 @@ public class Song implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
+        dest.writeLong(user_id);
         dest.writeLong(duration);
         dest.writeString(title);
         dest.writeString(artist);

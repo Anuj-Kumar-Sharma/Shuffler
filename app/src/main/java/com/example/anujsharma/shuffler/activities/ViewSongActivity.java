@@ -23,6 +23,7 @@ import com.example.anujsharma.shuffler.models.Playlist;
 import com.example.anujsharma.shuffler.models.Song;
 import com.example.anujsharma.shuffler.services.MusicService;
 import com.example.anujsharma.shuffler.utilities.Constants;
+import com.example.anujsharma.shuffler.utilities.DialogBoxes;
 import com.example.anujsharma.shuffler.utilities.SharedPreference;
 import com.example.anujsharma.shuffler.utilities.Utilities;
 import com.example.anujsharma.shuffler.utilities.ZoomOutPageTransformer;
@@ -284,7 +285,9 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
 
                 break;
             case R.id.ivAddToLibrary:
-
+                View mView = getLayoutInflater().inflate(R.layout.dialog_add_song_to_playlist, null);
+                View createPlaylistView = getLayoutInflater().inflate(R.layout.create_playlist_dialog_layout, null);
+                DialogBoxes.showAddSongToPlaylistDialog(context, mView, createPlaylistView, songs.get(currentPlayingPosition));
                 break;
             case R.id.ivShowSongMenu:
 

@@ -1,6 +1,10 @@
 package com.example.anujsharma.shuffler.utilities;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.util.Log;
 
 import com.example.anujsharma.shuffler.models.Song;
 import com.example.anujsharma.shuffler.volley.Urls;
@@ -16,6 +20,8 @@ import java.util.Locale;
  */
 
 public class Utilities {
+
+    public static String TAG = "UTILITY_TAG";
 
     public static String encodeKeyword(String keyword) {
         keyword = keyword.replaceAll("[^\\.\\-\\w\\s]", " ");
@@ -111,5 +117,24 @@ public class Utilities {
             songArtwork = songArtwork.replace("large.jpg", "t500x500.jpg");
         }
         return songArtwork;
+    }
+
+    public static Bitmap mergeThemAll(List<Bitmap> orderImagesList) {
+        Bitmap result = null;
+        if (orderImagesList != null && orderImagesList.size() > 0) {
+
+            result = Bitmap.createBitmap(orderImagesList.get(0).getWidth() * 2, orderImagesList.get(0).getHeight() * 2, Bitmap.Config.ARGB_8888);
+
+            Canvas canvas = new Canvas(result);
+            Paint paint = new Paint();
+            for (int i = 0; i < orderImagesList.size(); i++) {
+                canvas.drawBitmap(orderImagesList.get(i), orderImagesList.get(i).getWidth() * (i % 2), orderImagesList.get(i).getHeight() * (i / 2), paint);
+            }
+        } else {
+            Log.e("MergeError", "Couldn't merge bitmaps");
+        }
+
+        return result;
+
     }
 }

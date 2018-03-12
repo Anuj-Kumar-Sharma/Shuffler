@@ -64,7 +64,7 @@ public class YourLibraryRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
             case TYPE_PLAYLISTS:
                 yourLibraryTopContent = (YourLibraryTopContent) holder;
                 yourLibraryTopContent.tvText.setText(R.string.playlists);
-                yourLibraryTopContent.ivIcon.setBackground(context.getResources().getDrawable(R.drawable.ic_musical_note));
+                yourLibraryTopContent.ivIcon.setBackground(context.getResources().getDrawable(R.drawable.ic_playlist_circle));
                 break;
             case TYPE_SONGS:
                 yourLibraryTopContent = (YourLibraryTopContent) holder;

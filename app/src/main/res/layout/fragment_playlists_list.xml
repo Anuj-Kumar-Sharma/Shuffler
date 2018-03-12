@@ -1,0 +1,50 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.anujsharma.shuffler.fragments.PlaylistsListFragment">
+
+    <RelativeLayout
+        android:id="@+id/playlistsListHeader"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_bar_height"
+        android:background="@color/colorPrimary">
+
+        <ImageView
+            android:id="@+id/ivPlaylistsBackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/_13sdp"
+            app:srcCompat="@drawable/ic_back" />
+
+        <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/playlists"
+            android:textColor="@color/white"
+            android:textSize="@dimen/top_header_text_size"
+            app:typeface="@string/Font_Montserrat_SemiBold" />
+
+
+        <ImageView
+            android:id="@+id/ivCreatePlaylist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/_12sdp"
+            app:srcCompat="@drawable/ic_add_playlist" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvPlaylistsList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/playlistsListHeader"
+        android:background="@color/colorDark" />
+
+</RelativeLayout>
