@@ -54,6 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="@dimen/_12sdp"
+                android:background="?android:attr/selectableItemBackground"
                 app:srcCompat="@drawable/ic_up_arrow" />
         </FrameLayout>
 
@@ -83,6 +84,7 @@
             android:layout_centerVertical="true"
             android:layout_toStartOf="@+id/ivPlayNext"
             android:padding="@dimen/_3sdp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             app:srcCompat="@drawable/ic_play" />
 
 
@@ -95,6 +97,7 @@
             android:layout_marginLeft="@dimen/_12sdp"
             android:layout_marginRight="@dimen/_8sdp"
             android:padding="@dimen/_3sdp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             app:srcCompat="@drawable/ic_next" />
 
         <View
@@ -131,6 +134,7 @@
             android:text="@string/home"
             android:textColor="@color/white"
             android:textSize="@dimen/feed_bottom_text_size"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             app:typeface="@string/Font_Montserrat_Regular" />
 
 
@@ -150,6 +154,7 @@
             android:text="@string/search"
             android:textColor="@color/color_unselected"
             android:textSize="@dimen/feed_bottom_text_size"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             app:typeface="@string/Font_Montserrat_Regular" />
 
 
@@ -169,6 +174,7 @@
             android:text="@string/your_library"
             android:textColor="@color/color_unselected"
             android:textSize="@dimen/feed_bottom_text_size"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             app:typeface="@string/Font_Montserrat_Regular" />
 
 

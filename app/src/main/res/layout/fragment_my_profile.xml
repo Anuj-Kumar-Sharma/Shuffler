@@ -13,6 +13,7 @@
         android:text="Hello, Shuffler!"
         android:textColor="@color/white"
         android:textSize="@dimen/_24ssp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         app:typeface="@string/Font_Montserrat_Regular" />
 
 </RelativeLayout>

@@ -13,8 +13,7 @@
         android:layout_width="@dimen/_54sdp"
         android:layout_height="@dimen/_54sdp"
         android:layout_weight="1"
-        android:padding="@dimen/_6sdp"
-        android:transitionName="@string/simple_image_transition" />
+        android:padding="@dimen/_6sdp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -56,6 +55,7 @@
         android:layout_weight="1"
         android:padding="@dimen/_6sdp"
         android:tint="@color/color_unselected"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         app:srcCompat="@drawable/ic_cross_out" />
 
 </LinearLayout>

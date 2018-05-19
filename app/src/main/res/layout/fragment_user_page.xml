@@ -46,8 +46,7 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="@dimen/_12sdp"
                         android:scaleType="centerCrop"
-                        android:transitionName="@string/simple_image_transition"
-                        app:srcCompat="@drawable/ic_profile" />
+                        app:srcCompat="@drawable/ic_musical_note" />
 
                     <com.example.anujsharma.shuffler.fonts.TypefaceTextView
                         android:id="@+id/userName"
@@ -55,7 +54,9 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/userImage"
                         android:gravity="center"
-                        android:padding="@dimen/_6sdp"
+                        android:paddingLeft="@dimen/_6sdp"
+                        android:paddingRight="@dimen/_6sdp"
+                        android:paddingTop="@dimen/_6sdp"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_18ssp"
                         app:typeface="@string/Font_Montserrat_SemiBold" />
@@ -66,8 +67,26 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/userName"
                         android:gravity="center"
-                        android:paddingBottom="@dimen/_6sdp"
-                        android:textSize="@dimen/each_song_artist_text_size"
+                        android:layout_marginTop="@dimen/_6sdp"
+                        android:padding="@dimen/_6sdp"
+                        android:textSize="@dimen/feed_bottom_text_size"
+                        app:typeface="@string/Font_Montserrat_Regular" />
+
+                    <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+                        android:id="@+id/ivShuffleButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_6sdp"
+                        android:layout_marginEnd="@dimen/shuffle_button_margin"
+                        android:layout_marginStart="@dimen/shuffle_button_margin"
+                        android:layout_marginTop="@dimen/_6sdp"
+                        android:background="@drawable/shape_round_button"
+                        android:gravity="center"
+                        android:padding="@dimen/_12sdp"
+                        android:text="@string/shuffle_play"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/each_song_title_text_size"
+                        android:textStyle="bold"
                         app:typeface="@string/Font_Montserrat_Regular" />
 
                 </LinearLayout>

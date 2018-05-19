@@ -47,4 +47,8 @@
     <string name="add_to_playlist">Add to Playlist</string>
     <string name="new_playlist">+ New Playlist...</string>
     <string name="your_playlists">YOUR PLAYLISTS</string>
+    <string name="shuffle_play">SHUFFLE PLAY</string>
+    <string name="no_playlist_message">You do not have any playlists yet. Create one now.</string>
+    <string name="no_search_history_message">It\'s pretty quiet in here. Search something above.</string>
+    <string name="no_internet_connection_message">No Internet connection. Try again when you are connected to the Internet.</string>
 </resources>

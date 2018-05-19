@@ -70,5 +70,6 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:padding="@dimen/_6sdp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         app:srcCompat="@drawable/ic_three_dots" />
 </RelativeLayout>

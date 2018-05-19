@@ -2,13 +2,16 @@ package com.example.anujsharma.shuffler.utilities;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.v7.graphics.Palette;
 import android.util.Log;
 
 import com.example.anujsharma.shuffler.models.Song;
 import com.example.anujsharma.shuffler.volley.Urls;
 
+import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.NumberFormat;
@@ -119,22 +122,49 @@ public class Utilities {
         return songArtwork;
     }
 
+    public static String getMediumArtworkUrl(String songArtwork) {
+        // -large.jpg
+        if (songArtwork != null && !songArtwork.isEmpty()) {
+            songArtwork = songArtwork.replace("large.jpg", "t300x300.jpg");
+        }
+        return songArtwork;
+    }
+
     public static Bitmap mergeThemAll(List<Bitmap> orderImagesList) {
-        Bitmap result = null;
-        if (orderImagesList != null && orderImagesList.size() > 0) {
 
-            result = Bitmap.createBitmap(orderImagesList.get(0).getWidth() * 2, orderImagesList.get(0).getHeight() * 2, Bitmap.Config.ARGB_8888);
+        Log.d("TAG", "merging here.");
 
-            Canvas canvas = new Canvas(result);
-            Paint paint = new Paint();
-            for (int i = 0; i < orderImagesList.size(); i++) {
-                canvas.drawBitmap(orderImagesList.get(i), orderImagesList.get(i).getWidth() * (i % 2), orderImagesList.get(i).getHeight() * (i / 2), paint);
-            }
-        } else {
-            Log.e("MergeError", "Couldn't merge bitmaps");
+        Bitmap result = Bitmap.createBitmap(orderImagesList.get(0).getWidth() * 2, orderImagesList.get(0).getHeight() * 2, Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(result);
+        Paint paint = new Paint();
+        for (int i = 0; i < orderImagesList.size(); i++) {
+            canvas.drawBitmap(orderImagesList.get(i), orderImagesList.get(i).getWidth() * (i % 2), orderImagesList.get(i).getHeight() * (i / 2), paint);
         }
 
-        return result;
 
+        return result;
+    }
+
+    public static byte[] getBytesFromBitmap(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
+    }
+
+    public static Bitmap getBitmapFromBytes(byte[] image) {
+        return BitmapFactory.decodeByteArray(image, 0, image.length);
+    }
+
+    public static int getBackgroundColorFromPalette(Palette palette) {
+        if (palette != null) {
+            int background = palette.getDarkVibrantColor(0xFF616261);
+            if (background == 0xFF616261) background = palette.getDarkMutedColor(0xFF616261);
+            if (background == 0xFF616261) background = palette.getVibrantColor(0xFF616261);
+            if (background == 0xFF616261) background = palette.getMutedColor(0xFF616261);
+
+            return background;
+        }
+        return 0xFF616261;
     }
 }

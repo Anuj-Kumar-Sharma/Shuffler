@@ -15,6 +15,9 @@ import java.util.Objects;
  */
 
 public class NotificationBroadcast extends BroadcastReceiver {
+
+    private static final String TAG = "NotificationBroadcast";
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if (Objects.equals(intent.getAction(), Constants.CLICK_NEXT)) {

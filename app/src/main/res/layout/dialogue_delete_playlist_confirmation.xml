@@ -28,6 +28,7 @@
         android:padding="@dimen/_12sdp"
         android:text="@string/cancel"
         android:textColor="@color/color_unselected"
+        android:background="?android:attr/selectableItemBackground"
         app:typeface="@string/Font_Montserrat_Light" />
 
     <com.example.anujsharma.shuffler.fonts.TypefaceTextView
@@ -39,6 +40,7 @@
         android:padding="@dimen/_12sdp"
         android:text="@string/delete"
         android:textColor="@color/red"
+        android:background="?android:attr/selectableItemBackground"
         app:typeface="@string/Font_Montserrat_Light" />
 
 </RelativeLayout>

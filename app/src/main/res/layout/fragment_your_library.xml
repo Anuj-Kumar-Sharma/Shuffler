@@ -30,6 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:padding="@dimen/_12sdp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             app:srcCompat="@drawable/ic_profile_selected" />
     </RelativeLayout>
 

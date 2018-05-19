@@ -36,6 +36,7 @@
         android:text="@string/new_playlist"
         android:textColor="@color/white"
         android:textSize="@dimen/each_song_artist_text_size"
+        android:background="?android:attr/selectableItemBackground"
         app:typeface="@string/Font_Montserrat_Regular" />
 
     <com.example.anujsharma.shuffler.fonts.TypefaceTextView

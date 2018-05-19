@@ -35,6 +35,7 @@ public class Playlist implements Parcelable {
     private List<Song> songs;
     private User user;
     private boolean selfMade;
+    private byte[] playlistArtworkBlob;
 
 
     public Playlist(JSONObject playlist) {
@@ -86,6 +87,18 @@ public class Playlist implements Parcelable {
         track_count = in.readInt();
         songs = in.createTypedArrayList(Song.CREATOR);
         user = in.readParcelable(User.class.getClassLoader());
+    }
+
+    public byte[] getPlaylistArtworkBlob() {
+        return playlistArtworkBlob;
+    }
+
+    public void setPlaylistArtworkBlob(byte[] playlistArtworkBlob) {
+        this.playlistArtworkBlob = playlistArtworkBlob;
+    }
+
+    public void setSelfMade(boolean selfMade) {
+        this.selfMade = selfMade;
     }
 
     public boolean isSelfMade() {

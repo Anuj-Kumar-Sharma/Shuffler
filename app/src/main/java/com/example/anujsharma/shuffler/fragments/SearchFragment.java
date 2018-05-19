@@ -7,12 +7,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,6 +23,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.anujsharma.shuffler.R;
@@ -42,6 +42,7 @@ import com.example.anujsharma.shuffler.models.User;
 import com.example.anujsharma.shuffler.utilities.Constants;
 import com.example.anujsharma.shuffler.utilities.CustomLinearLayoutManager;
 import com.example.anujsharma.shuffler.utilities.DialogBoxes;
+import com.example.anujsharma.shuffler.utilities.InternetConnection;
 import com.example.anujsharma.shuffler.utilities.SharedPreference;
 import com.example.anujsharma.shuffler.utilities.Utilities;
 import com.example.anujsharma.shuffler.volley.RequestCallback;
@@ -57,7 +58,6 @@ import java.util.List;
 public class SearchFragment extends Fragment implements RequestCallback {
 
     public EditText etSearch;
-    private View transitionView;
     private TracksDao tracksDao;
     private UsersDao usersDao;
     private PlaylistsDao playlistsDao;
@@ -71,12 +71,16 @@ public class SearchFragment extends Fragment implements RequestCallback {
     private ArrayList<Song> songs;
     private ArrayList<User> users;
     private ArrayList<Playlist> playlists;
+    private static int messageState;
     private Context context;
     private LinearLayout relativeLayout;
     private int currentSongIndex;
     private SharedPreference pref;
     private MyDatabaseAdapter myDatabaseAdapter;
     private SearchHistoryRecyclerViewAdapter searchHistoryRecyclerAdapter;
+    private Playlist currentHistoryPlaylist;
+    private ProgressBar progressBar;
+    private RelativeLayout rlNoSearchHistory, rlNoSearchResultFound, rlNoInternet;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -109,7 +113,6 @@ public class SearchFragment extends Fragment implements RequestCallback {
                         ((MainActivity) getActivity()).playSongInMainActivity(position, playlist);
                         long added = myDatabaseAdapter.addToHistory(new HybridModel(Constants.TYPE_TRACK, song.getId(),
                                 song.getSongArtwork(), song.getTitle(), song.getUser().getUsername()));
-                        Log.d("TAG", "added " + added);
                         changeSelectedPosition(position + 1);
                         break;
                     case Constants.EACH_SONG_MENU_CLICKED:
@@ -223,6 +226,9 @@ public class SearchFragment extends Fragment implements RequestCallback {
                             history = historyList.get(position);
                             myDatabaseAdapter.deleteFromHistory(history.getId());
                             searchHistoryRecyclerAdapter.deleteFromHistory(position + 1, myDatabaseAdapter.getHistroyList());
+                            if (myDatabaseAdapter.getHistroyList().size() == 0) {
+                                rlNoSearchHistory.setVisibility(View.VISIBLE);
+                            }
                         }
                         break;
                     case Constants.HISTORY_LAYOUT_CLICKED:
@@ -232,23 +238,94 @@ public class SearchFragment extends Fragment implements RequestCallback {
                                 tracksDao.getTrackWithId(String.valueOf(history.getId()));
                                 break;
                             case Constants.TYPE_USER:
-                                transitionView = view;
                                 usersDao.getUserWithId(String.valueOf(history.getId()));
                                 break;
                             case Constants.TYPE_PLAYLIST:
-                                transitionView = view;
+                                playlistsDao.getPlaylistFromPlaylistId(history.getId());
                                 break;
                         }
                         break;
                     case Constants.CLEAR_HISTORY_CLICKED:
                         myDatabaseAdapter.deleteFromHistory(null);
                         searchHistoryRecyclerAdapter.updateHistory(new ArrayList<HybridModel>());
+                        rlNoSearchHistory.setVisibility(View.VISIBLE);
                         break;
                 }
             }
         });
     }
 
+
+    public void manageMessageLayouts() {
+        switch (messageState) {
+            case Constants.SHOW_NO_HISTORY:
+                showNoSearchHistoryMessage();
+                break;
+            case Constants.SHOW_NO_INTERNET_CONNECTION:
+                showNoInternetMessage();
+                break;
+            case Constants.SHOW_NO_SEARCH_RESULT:
+                showNoSearchReultFoundMessage();
+                break;
+            case Constants.SHOW_PROGRESS_BAR:
+                showProgressBar();
+                break;
+            case Constants.SHOW_RECYCLER_VIEW:
+                showRecyclerView();
+                break;
+        }
+    }
+
+    private void showNoInternetMessage() {
+        rlNoInternet.setVisibility(View.VISIBLE);
+        rlNoSearchResultFound.setVisibility(View.GONE);
+        rlNoSearchHistory.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
+        rvSearchResult.setVisibility(View.GONE);
+        messageState = Constants.SHOW_NO_INTERNET_CONNECTION;
+    }
+
+    private void showNoSearchReultFoundMessage() {
+        messageState = Constants.SHOW_NO_SEARCH_RESULT;
+        rlNoInternet.setVisibility(View.GONE);
+        rlNoSearchResultFound.setVisibility(View.VISIBLE);
+        rlNoSearchHistory.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
+        rvSearchResult.setVisibility(View.GONE);
+    }
+
+    private void showNoSearchHistoryMessage() {
+        messageState = Constants.SHOW_NO_HISTORY;
+        rlNoInternet.setVisibility(View.GONE);
+        rlNoSearchResultFound.setVisibility(View.GONE);
+        rlNoSearchHistory.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+        rvSearchResult.setVisibility(View.GONE);
+    }
+
+    private void showProgressBar() {
+        messageState = Constants.SHOW_PROGRESS_BAR;
+        rlNoInternet.setVisibility(View.GONE);
+        rlNoSearchResultFound.setVisibility(View.GONE);
+        rlNoSearchHistory.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+        rvSearchResult.setVisibility(View.GONE);
+    }
+
+    private void showRecyclerView() {
+        messageState = Constants.SHOW_RECYCLER_VIEW;
+        rlNoInternet.setVisibility(View.GONE);
+        rlNoSearchResultFound.setVisibility(View.GONE);
+        rlNoSearchHistory.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
+        rvSearchResult.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        manageMessageLayouts();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -267,6 +344,7 @@ public class SearchFragment extends Fragment implements RequestCallback {
             @Override
             public void onClick(View v) {
                 if (etSearch.length() > 0) etSearch.getText().clear();
+                showHistory();
                 InputMethodManager imgr = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imgr != null) {
                     imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
@@ -308,25 +386,23 @@ public class SearchFragment extends Fragment implements RequestCallback {
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 /*if (rvSearchResult.getAdapter() instanceof SearchHistoryRecyclerViewAdapter) {
                     rvSearchResult.setAdapter(searchSongRecyclerAdapter);
-                    Log.d("TAG", "changed to searchSong");
                 }*/
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 //                performSearch();
-                if (charSequence.toString().isEmpty()) showHistory();
+                rvSearchResult.setVisibility(View.GONE);
+                if (charSequence.toString().trim().isEmpty()) showHistory();
                 else {
                     if (rvSearchResult.getAdapter() instanceof SearchHistoryRecyclerViewAdapter) {
                         rvSearchResult.setAdapter(searchSongRecyclerAdapter);
-                        Log.d("TAG", "changed to searchSong");
                     }
                 }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-
             }
         });
     }
@@ -337,19 +413,27 @@ public class SearchFragment extends Fragment implements RequestCallback {
         layoutManager.scrollToPosition(0);
         customLinearLayoutManager.scrollToPosition(0);
         String query = etSearch.getText().toString();
-        if (query.isEmpty()) {
+        if (query.trim().isEmpty()) {
             showHistory();
         } else {
-            tracksDao.getTracksWithQuery(query, 100);
+            showProgressBar();
+            if (InternetConnection.isOnline(context)) tracksDao.getTracksWithQuery(query, 100);
+            else {
+                showNoInternetMessage();
+            }
         }
     }
 
     private void showHistory() {
+        if (myDatabaseAdapter.getHistroyList().size() == 0) {
+            showNoSearchHistoryMessage();
+        } else {
+            showRecyclerView();
+        }
         searchHistoryRecyclerAdapter.updateHistory(myDatabaseAdapter.getHistroyList());
         rvSearchResult.setAdapter(searchHistoryRecyclerAdapter);
         rvSearchResult.clearFocus();
 //        etSearch.requestFocus();
-        Log.d("TAG", "changed to searchHistory");
     }
 
     private void initialise(View view) {
@@ -357,11 +441,20 @@ public class SearchFragment extends Fragment implements RequestCallback {
         crossOut = view.findViewById(R.id.ivSearchCross);
         rvSearchResult = view.findViewById(R.id.rvSearchResult);
         relativeLayout = view.findViewById(R.id.search_background);
-
+        rlNoSearchResultFound = view.findViewById(R.id.rlNoSearchResultFound);
         layoutManager = new LinearLayoutManager(context);
-        customLinearLayoutManager = new CustomLinearLayoutManager(context);
+        customLinearLayoutManager = new CustomLinearLayoutManager(context, new CustomLinearLayoutManager.MyErrorListener() {
+            @Override
+            public void onIoobeFound() {
+                rlNoSearchResultFound.setVisibility(View.VISIBLE);
+            }
+        });
         rvSearchResult.setLayoutManager(customLinearLayoutManager);
         rvSearchResult.setAdapter(searchHistoryRecyclerAdapter);
+        progressBar = view.findViewById(R.id.search_progressbar);
+        rlNoSearchHistory = view.findViewById(R.id.rlNoSearchHistory);
+        rlNoInternet = view.findViewById(R.id.rlNoInternetConnection);
+        showHistory();
     }
 
     public void setBackground(String url) {
@@ -385,7 +478,6 @@ public class SearchFragment extends Fragment implements RequestCallback {
 
                     if (rvSearchResult.getAdapter() instanceof SearchHistoryRecyclerViewAdapter) {
                         rvSearchResult.setAdapter(searchSongRecyclerAdapter);
-                        Log.d("TAG", "changed to searchSong");
                     }
 
                     if (list != null) songs.addAll(list);
@@ -446,6 +538,24 @@ public class SearchFragment extends Fragment implements RequestCallback {
                         searchSongRecyclerAdapter.changePlaylistData(playlists);
                     }
                 }
+                showRecyclerView();
+                if (searchSongRecyclerAdapter.getItemCount() == 0) {
+                    showNoSearchReultFoundMessage();
+                }
+                break;
+
+            case Constants.SEARCH_SONG_WITH_PLAYLIST_ID:
+                if (status) {
+                    currentHistoryPlaylist.setSongs(list);
+                    currentHistoryPlaylist.setTrack_count(list.size());
+                    UserPageFragment userPageFragment = new UserPageFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(Constants.TYPE, Constants.TYPE_PLAYLIST);
+                    bundle.putParcelable(Constants.PLAYLIST_MODEL_KEY, currentHistoryPlaylist);
+                    userPageFragment.setArguments(bundle);
+                    getFragmentManager().beginTransaction().replace(R.id.mainFrameContainer, userPageFragment, Constants.FRAGMENT_USER_PAGE)
+                            .addToBackStack(userPageFragment.getClass().getName()).commit();
+                }
                 break;
 
         }
@@ -473,13 +583,19 @@ public class SearchFragment extends Fragment implements RequestCallback {
                     userPageFragment.setArguments(bundle);
 
                     getFragmentManager().beginTransaction()
-                            .addSharedElement(transitionView, ViewCompat.getTransitionName(transitionView))
                             .replace(R.id.mainFrameContainer, userPageFragment, Constants.FRAGMENT_USER_PAGE)
                             .addToBackStack(userPageFragment.getClass().getName()).commit();
                 }
                 break;
             case Constants.SEARCH_PLAYLISTS_WITH_ID:
-
+                currentHistoryPlaylist = (Playlist) object;
+                UserPageFragment userPageFragment = new UserPageFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt(Constants.TYPE, Constants.TYPE_PLAYLIST);
+                bundle.putParcelable(Constants.PLAYLIST_MODEL_KEY, currentHistoryPlaylist);
+                userPageFragment.setArguments(bundle);
+                getFragmentManager().beginTransaction().replace(R.id.mainFrameContainer, userPageFragment, Constants.FRAGMENT_USER_PAGE)
+                        .addToBackStack(userPageFragment.getClass().getName()).commit();
                 break;
         }
     }

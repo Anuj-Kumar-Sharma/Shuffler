@@ -1,6 +1,7 @@
 package com.example.anujsharma.shuffler.dao;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.VolleyError;
 import com.example.anujsharma.shuffler.models.Playlist;
@@ -92,6 +93,29 @@ public class PlaylistsDao extends VolleyRequest {
             @Override
             public void errorResponse(VolleyError error) {
                 requestCallback.onListRequestSuccessful(null, Constants.SEARCH_SONG_WITH_PLAYLIST_ID, false);
+            }
+        }, Constants.METHOD_GET, null);
+    }
+
+    public void getPlaylistFromPlaylistId(long playlistId) {
+        String url = Utilities.getApiUrlPlaylistId(String.valueOf(playlistId));
+        Log.d("TAG", url);
+        callApiForObject(url, new DaoCallback() {
+            @Override
+            public void response(Object response) {
+                JSONObject jsonObject = (JSONObject) response;
+                Playlist playlist = new Playlist(jsonObject);
+                requestCallback.onObjectRequestSuccessful(playlist, Constants.SEARCH_PLAYLISTS_WITH_ID, true);
+            }
+
+            @Override
+            public void stringResponse(String response) {
+
+            }
+
+            @Override
+            public void errorResponse(VolleyError error) {
+                requestCallback.onObjectRequestSuccessful(null, Constants.SEARCH_PLAYLISTS_WITH_ID, false);
             }
         }, Constants.METHOD_GET, null);
     }

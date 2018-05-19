@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -55,7 +56,7 @@ public class UserPageFragment extends Fragment implements RequestCallback {
     private ArrayList<Song> songs;
     private Context context;
     private ImageView ivBackButton, ivUserImage;
-    private TextView tvHeaderUserName, tvuserName, tvFollowersCount;
+    private TextView tvHeaderUserName, tvuserName, tvFollowersCount, shufflePlayButton;
     private RecyclerView rvUserRecyclerView;
     private UserPageRecyclerViewAdapter userPageRecyclerViewAdapter;
     private LinearLayout llUserPage;
@@ -153,12 +154,27 @@ public class UserPageFragment extends Fragment implements RequestCallback {
             }
         });
 
+        shufflePlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (TYPE) {
+                    case Constants.TYPE_USER:
+                        Toast.makeText(context, "Cannot shuffle this playlist.", Toast.LENGTH_SHORT).show();
+                        break;
+                    case Constants.TYPE_PLAYLIST:
+                        ((MainActivity) getActivity()).playSongInMainActivity(0, currentPlaylist);
+                        break;
+
+                }
+            }
+        });
     }
 
     private void initialise(View view) {
         ivBackButton = view.findViewById(R.id.ivUserBackButton);
         ivUserImage = view.findViewById(R.id.userImage);
         tvuserName = view.findViewById(R.id.userName);
+        shufflePlayButton = view.findViewById(R.id.ivShuffleButton);
         tvHeaderUserName = view.findViewById(R.id.tvHeaderUserName);
         tvFollowersCount = view.findViewById(R.id.userFollowers);
         rvUserRecyclerView = view.findViewById(R.id.userRecyclerView);
@@ -173,8 +189,7 @@ public class UserPageFragment extends Fragment implements RequestCallback {
         getColorPaletteFromImageUrl = new GetColorPaletteFromImageUrl(context, new GetColorPaletteFromImageUrl.PaletteCallback() {
             @Override
             public void onPostExecute(Palette palette) {
-                if (palette != null) changeBackground(palette.getDarkVibrantColor(0xFF616261));
-                else changeBackground(0xFF616261);
+                changeBackground(Utilities.getBackgroundColorFromPalette(palette));
             }
         });
 
@@ -205,26 +220,39 @@ public class UserPageFragment extends Fragment implements RequestCallback {
 
         if (!currentPlaylist.getArtworkUrl().isEmpty())
             getColorPaletteFromImageUrl.execute(currentPlaylist.getArtworkUrl());
+        else if (currentPlaylist.getPlaylistArtworkBlob() != null) {
+            Palette palette = Palette.from(Utilities.getBitmapFromBytes(currentPlaylist.getPlaylistArtworkBlob())).generate();
+            changeBackground(Utilities.getBackgroundColorFromPalette(palette));
+        }
 
         tvuserName.setText(currentPlaylist.getTitle());
         tvHeaderUserName.setText(currentPlaylist.getTitle());
-        String followersCount = Utilities.formatIntegerWithCommas(currentPlaylist.getLikesCount(), " LIKES");
-        tvFollowersCount.setText(followersCount);
-        Glide.with(context)
-                .load(Utilities.getLargeArtworkUrl(currentPlaylist.getArtworkUrl()))
-                .placeholder(R.drawable.ic_playlist)
-                .fitCenter()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(ivUserImage);
 
-        if (!currentPlaylist.isSelfMade())
+        String tvText = String.format("PLAYLIST  •  %d TRACKS", currentPlaylist.getTracksCount());
+
+        if (!currentPlaylist.isSelfMade()) {
+            if (currentPlaylist.getLikesCount() > 0)
+                tvFollowersCount.setText(String.format("%s  •  %s LIKES", tvText, Utilities.formatIntegerWithCommas(currentPlaylist.getLikesCount(), "")));
+            else tvFollowersCount.setText(tvText);
+            Glide.with(context)
+                    .load(Utilities.getLargeArtworkUrl(currentPlaylist.getArtworkUrl()))
+                    .placeholder(R.drawable.ic_playlist)
+                    .fitCenter()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(ivUserImage);
             playlistsDao.getTracksFromPlaylistId(currentPlaylist.getPlaylistId());
+        }
         else {
-            tvFollowersCount.setVisibility(View.GONE);
+            tvuserName.setVisibility(View.GONE);
+            tvFollowersCount.setText(tvText);
             songs.clear();
             songs = (ArrayList<Song>) currentPlaylist.getSongs();
             changeSelectedPosition(Utilities.getSelectedPosition(context, songs, 0));
             seeAllRecyclerViewAdapter.changeSongData(songs);
+            if (currentPlaylist.getPlaylistArtworkBlob() != null) {
+                Bitmap bitmap = Utilities.getBitmapFromBytes(currentPlaylist.getPlaylistArtworkBlob());
+                ivUserImage.setImageBitmap(bitmap);
+            }
         }
     }
 

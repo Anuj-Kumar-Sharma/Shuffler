@@ -25,6 +25,7 @@ public class MySqliteHelper extends SQLiteOpenHelper {
     public static final String PLAYLIST_ID = "playlist_id";
     public static final String PLAYLIST_TITLE = "playlist_title";
     public static final String PLAYLIST_TRACK_COUNT = "playlist_track_count";
+    public static final String PLAYLIST_ARTWORK_BLOB = "playlist_artwork_blob";
 
     public static final String SONGS_TABLE = "song_table";
     public static final String SONG_ID = "song_id";
@@ -40,7 +41,7 @@ public class MySqliteHelper extends SQLiteOpenHelper {
 
 
     private static final String DATABASE_NAME = "shufflerDb";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     private static final String CREATE_HISTORY_TABLE = "CREATE TABLE " +
             HISTORY_TABLE + " (" +
@@ -56,7 +57,8 @@ public class MySqliteHelper extends SQLiteOpenHelper {
             PLAYLIST_ID + " INTEGER , " +
             PLAYLIST_TITLE + " VARCHAR , " +
             PLAYLIST_TRACK_COUNT + " INTEGER , " +
-            ARTWORK_URL + " VARCHAR )";
+            ARTWORK_URL + " VARCHAR ," +
+            PLAYLIST_ARTWORK_BLOB + " BLOB )";
     private static final String DROP_PLAYLISTS_LIST_TABLE = "DROP TABLE IF EXISTS " + PLAYLISTS_LIST_TABLE;
 
     private static final String CREATE_SONGS_TABLE = "CREATE TABLE " +

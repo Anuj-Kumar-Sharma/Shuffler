@@ -73,12 +73,13 @@ public class Song implements Parcelable {
             this.genre = song.getString("genre").trim();
             this.permalink = song.getString("permalink").trim();
             this.songArtwork = song.getString("artwork_url");
-            this.streamUrl = song.getString("stream_url");
+            this.streamUrl = song.has("stream_url") ? song.getString("stream_url") : "";
             this.playbackCount = song.has("playback_count") ? song.getInt("playback_count") : 0;
             this.likesCount = song.has("likes_count") ? song.getInt("likes_count") : 0;
             this.favoritngsCount = song.has("favoritings_count") ? song.getInt("favoritings_count") : 0;
             this.user = new User(song.getJSONObject("user"));
             this.artist = this.user.getUsername();
+            if (this.likesCount == 0) this.likesCount = this.favoritngsCount;
         } catch (JSONException e) {
             e.printStackTrace();
         }

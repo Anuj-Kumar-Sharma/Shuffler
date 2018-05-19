@@ -73,4 +73,11 @@ public class Constants {
     public static final String CLICK_NEXT = "com.example.anujsharma.shuffler.utilities.nextClick";
     public static final String CLICK_PREVIOUS = "com.example.anujsharma.shuffler.utilities.previousClick";
     public static final String CLICK_PLAY_PAUSE = "com.example.anujsharma.shuffler.utilities.playPauseClick";
+    public static final String FROM_NOTIFICATION = "fromNotification";
+
+    public static final int SHOW_NO_HISTORY = 32;
+    public static final int SHOW_NO_SEARCH_RESULT = 33;
+    public static final int SHOW_NO_INTERNET_CONNECTION = 34;
+    public static final int SHOW_PROGRESS_BAR = 35;
+    public static final int SHOW_RECYCLER_VIEW = 36;
 }

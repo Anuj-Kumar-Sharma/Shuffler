@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:focusable="true"
             android:padding="@dimen/_12sdp"
             app:srcCompat="@drawable/ic_cross_out" />
@@ -47,12 +48,118 @@
 
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvSearchResult"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/searchHeaderLayout"
-        android:focusable="true"
-        android:focusableInTouchMode="true" />
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvSearchResult"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+
+        <ProgressBar
+            android:id="@+id/search_progressbar"
+            android:layout_width="@dimen/simple_icon_size"
+            android:layout_height="@dimen/simple_icon_size"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:id="@+id/rlNoSearchHistory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+
+            <ImageView
+                android:layout_width="@dimen/shuffle_button_margin"
+                android:layout_height="@dimen/shuffle_button_margin"
+                android:layout_above="@id/tvNoPlaylistMessage"
+                android:layout_centerHorizontal="true"
+                app:srcCompat="@drawable/ic_search" />
+
+
+            <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+                android:id="@+id/tvNoPlaylistMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/_84sdp"
+                android:padding="@dimen/_36sdp"
+                android:text="@string/no_search_history_message"
+                android:textAlignment="center"
+                android:textColor="@color/color_unselected"
+                android:textSize="@dimen/each_song_title_text_size"
+                app:typeface="@string/Font_Montserrat_Regular" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlNoSearchResultFound"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+
+            <ImageView
+                android:layout_width="@dimen/shuffle_button_margin"
+                android:layout_height="@dimen/shuffle_button_margin"
+                android:layout_above="@id/tvNoSearchResultFound"
+                android:layout_centerHorizontal="true"
+                app:srcCompat="@drawable/ic_sad_smartphone" />
+
+
+            <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+                android:id="@+id/tvNoSearchResultFound"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/_84sdp"
+                android:padding="@dimen/_36sdp"
+                android:text="No search results could be found. Try something else."
+                android:textAlignment="center"
+                android:textColor="@color/color_unselected"
+                android:textSize="@dimen/each_song_title_text_size"
+                app:typeface="@string/Font_Montserrat_Regular" />
+
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/rlNoInternetConnection"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+
+            <ImageView
+                android:layout_width="@dimen/shuffle_button_margin"
+                android:layout_height="@dimen/shuffle_button_margin"
+                android:layout_above="@id/tvNoInternetConnection"
+                android:layout_centerHorizontal="true"
+                app:srcCompat="@drawable/ic_sad_cloud" />
+
+
+            <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+                android:id="@+id/tvNoInternetConnection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/_84sdp"
+                android:padding="@dimen/_36sdp"
+                android:text="@string/no_internet_connection_message"
+                android:textAlignment="center"
+                android:textColor="@color/color_unselected"
+                android:textSize="@dimen/each_song_title_text_size"
+                app:typeface="@string/Font_Montserrat_Regular" />
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

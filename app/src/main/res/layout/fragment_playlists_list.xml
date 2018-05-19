@@ -17,6 +17,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:paddingLeft="@dimen/_13sdp"
+            android:background="?android:attr/selectableItemBackground"
             app:srcCompat="@drawable/ic_back" />
 
         <com.example.anujsharma.shuffler.fonts.TypefaceTextView
@@ -37,6 +38,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:padding="@dimen/_12sdp"
+            android:background="?android:attr/selectableItemBackground"
             app:srcCompat="@drawable/ic_add_playlist" />
     </RelativeLayout>
 
@@ -46,5 +48,35 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/playlistsListHeader"
         android:background="@color/colorDark" />
+
+    <RelativeLayout
+        android:id="@+id/rlNoPlaylistMessage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/playlistsListHeader">
+
+        <ImageView
+            android:layout_width="@dimen/shuffle_button_margin"
+            android:layout_height="@dimen/shuffle_button_margin"
+            android:layout_above="@id/tvNoPlaylistMessage"
+            android:layout_centerHorizontal="true"
+            android:tint="@color/color_unselected"
+            app:srcCompat="@drawable/ic_add_playlist" />
+
+        <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+            android:id="@+id/tvNoPlaylistMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/_84sdp"
+            android:padding="@dimen/_36sdp"
+            android:text="@string/no_playlist_message"
+            android:textAlignment="center"
+            android:textColor="@color/color_unselected"
+            android:textSize="@dimen/each_song_title_text_size"
+            app:typeface="@string/Font_Montserrat_Regular" />
+
+
+    </RelativeLayout>
 
 </RelativeLayout>

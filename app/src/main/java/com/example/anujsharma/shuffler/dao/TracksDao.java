@@ -56,7 +56,7 @@ public class TracksDao extends VolleyRequest {
 
             @Override
             public void errorResponse(VolleyError error) {
-                requestCallback.onListRequestSuccessful(null, Constants.SEARCH_SONGS_WITH_QUERY, true);
+                requestCallback.onListRequestSuccessful(null, Constants.SEARCH_SONGS_WITH_QUERY, false);
             }
         }, Constants.METHOD_GET, null);
 

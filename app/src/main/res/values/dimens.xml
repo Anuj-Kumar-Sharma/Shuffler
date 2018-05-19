@@ -11,7 +11,9 @@
     <dimen name="playlist_image_dimen">@dimen/_54sdp</dimen>
     <dimen name="feed_video_item">@dimen/_60sdp</dimen>
     <dimen name="notification_song_height">64dp</dimen>
-    <dimen name="user_image_dimen">@dimen/_136sdp</dimen>
+    <dimen name="shuffle_button_margin">@dimen/_72sdp</dimen>
     <dimen name="user_playlist_image_dimen">@dimen/_136sdp</dimen>
+    <dimen name="user_image_dimen">@dimen/_172sdp</dimen>
+
 
 </resources>

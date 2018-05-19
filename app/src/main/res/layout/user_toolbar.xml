@@ -17,6 +17,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:paddingEnd="@dimen/_6sdp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             app:srcCompat="@drawable/ic_back" />
 
         <com.example.anujsharma.shuffler.fonts.TypefaceTextView

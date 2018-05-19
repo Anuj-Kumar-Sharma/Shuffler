@@ -124,6 +124,12 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
         if (songs != null && songs.size() > 0)
             currentPlayingSong = songs.get(currentPlayingPosition);
 
+        if (playIntent == null) {
+            playIntent = new Intent(getBaseContext(), MusicService.class);
+            bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
+            startService(playIntent);
+        }
+
         initialize();
         initializeListeners();
     }
@@ -131,11 +137,7 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onStart() {
         super.onStart();
-        if (playIntent == null) {
-            playIntent = new Intent(getBaseContext(), MusicService.class);
-            bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
-            startService(playIntent);
-        }
+
     }
 
     @Override
@@ -150,8 +152,7 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
         GetColorPaletteFromImageUrl getColorPaletteFromImageUrl = new GetColorPaletteFromImageUrl(context, new GetColorPaletteFromImageUrl.PaletteCallback() {
             @Override
             public void onPostExecute(Palette palette) {
-                if (palette != null) changeBackground(palette.getDarkVibrantColor(0xFF616261));
-                else changeBackground(0xFF616261);
+                changeBackground(Utilities.getBackgroundColorFromPalette(palette));
             }
         });
         getColorPaletteFromImageUrl.execute(url);
@@ -269,10 +270,10 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
         viewPager.setAdapter(seeAllViewPagerAdapter);
         viewPager.setCurrentItem(currentPlayingPosition);
 
-        if (MainActivity.musicSrv.getState() == Constants.MUSIC_LOADED) {
+        /*if (musicService.getState() == Constants.MUSIC_LOADED) {
             seekBar.setEnabled(false);
             ivPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
-        }
+        }*/
     }
 
     @Override
@@ -293,12 +294,12 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
 
                 break;
             case R.id.ivShuffle:
-                if (musicService.isShuffle()) {
+                if (pref.getIsShuffleOn()) {
                     ivShuffle.setColorFilter(context.getResources().getColor(R.color.white));
-                    musicService.setShuffle(false);
+                    pref.setIsShuffleOn(false);
                 } else {
                     ivShuffle.setColorFilter(context.getResources().getColor(R.color.colorAccent));
-                    musicService.setShuffle(true);
+                    pref.setIsShuffleOn(true);
                 }
                 break;
             case R.id.ivPrevious:
@@ -325,12 +326,12 @@ public class ViewSongActivity extends AppCompatActivity implements View.OnClickL
                 musicService.playNext();
                 break;
             case R.id.ivRepeat:
-                if (musicService.isRepeat()) {
+                if (pref.getIsRepeatOn()) {
                     ivRepeat.setColorFilter(context.getResources().getColor(R.color.white));
-                    musicService.setRepeat(false);
+                    pref.setIsRepeatOn(false);
                 } else {
                     ivRepeat.setColorFilter(context.getResources().getColor(R.color.colorAccent));
-                    musicService.setRepeat(true);
+                    pref.setIsRepeatOn(true);
                 }
                 break;
         }

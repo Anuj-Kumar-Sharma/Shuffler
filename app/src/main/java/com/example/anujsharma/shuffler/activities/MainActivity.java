@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -29,8 +30,10 @@ import com.example.anujsharma.shuffler.fragments.SearchFragment;
 import com.example.anujsharma.shuffler.fragments.YourLibraryFragment;
 import com.example.anujsharma.shuffler.models.Playlist;
 import com.example.anujsharma.shuffler.models.Song;
+import com.example.anujsharma.shuffler.receivers.MediaButtonBroadcast;
 import com.example.anujsharma.shuffler.services.MusicService;
 import com.example.anujsharma.shuffler.utilities.Constants;
+import com.example.anujsharma.shuffler.utilities.FisherYatesShuffle;
 import com.example.anujsharma.shuffler.utilities.SharedPreference;
 import com.example.anujsharma.shuffler.volley.RequestCallback;
 import com.example.anujsharma.shuffler.volley.Urls;
@@ -120,6 +123,10 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        MediaButtonBroadcast mMediaButtonReceiver = new MediaButtonBroadcast();
+        IntentFilter mediaFilter = new IntentFilter(Intent.ACTION_MEDIA_BUTTON);
+        mediaFilter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+        registerReceiver(mMediaButtonReceiver, mediaFilter);
 
         if (playIntent == null) {
             playIntent = new Intent(getBaseContext(), MusicService.class);
@@ -134,9 +141,28 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         } else {
             requestPermissions();
         }
+
+        Intent notificationIntent = getIntent();
+        boolean fromNotification = notificationIntent.getBooleanExtra(Constants.FROM_NOTIFICATION, false);
+        if (fromNotification) {
+
+            currentPlaylist = notificationIntent.getParcelableExtra(Constants.PLAYLIST_MODEL_KEY);
+            currentSongPosition = notificationIntent.getIntExtra(Constants.CURRENT_PLAYING_SONG_POSITION, 0);
+            boolean isPlaying = notificationIntent.getBooleanExtra(Constants.IS_PLAYING, true);
+
+            Intent intent = new Intent(context, ViewSongActivity.class);
+            intent.putExtra(Constants.PLAYLIST_MODEL_KEY, currentPlaylist);
+            intent.putExtra(Constants.CURRENT_PLAYING_SONG_POSITION, currentSongPosition);
+            intent.putExtra(Constants.IS_PLAYING, isPlaying);
+            context.startActivity(intent);
+        }
     }
 
     public void playSongInMainActivity(int songPosition, Playlist playlist) {
+        if (playlist.getSongs() == null || playlist.getSongs().size() == 0) {
+            Toast.makeText(context, "Unable to play this Playlist.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Song song = playlist.getSongs().get(songPosition);
         currentSongPosition = songPosition;
         pref.setCurrentPlayingSong(song.getId());
@@ -144,6 +170,13 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         pref.setCurrentPlayingSongPosition(songPosition);
         tvSongName.setText(song.getTitle());
         this.currentPlaylist = playlist;
+        ArrayList<Integer> shuffleList = new ArrayList<>();
+        for (int i = 0; i < playlist.getSongs().size(); i++) shuffleList.add(i);
+        pref.setCurrentPlaylistShuffleArray(shuffleList);
+        pref.setCurrentShuffleSongPosition(0);
+        FisherYatesShuffle.updateShuffleList(context, songPosition);
+
+
         String url = song.getStreamUrl() + "?client_id=" + Urls.CLIENT_ID;
         Log.d("TAG", "currently playing " + url);
 
@@ -172,18 +205,20 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         ivPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (musicSrv.isPlaying()) {
-                    musicSrv.pausePlayer();
-                } else {
-                    musicSrv.go();
-                }
+                if (pref.getCurrentPlaylist() != null)
+                    if (musicSrv.isPlaying()) {
+                        musicSrv.pausePlayer();
+                    } else {
+                        musicSrv.go();
+                    }
             }
         });
 
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                musicSrv.playNext();
+                if (pref.getCurrentPlaylist() != null)
+                    musicSrv.playNext();
             }
         });
 
@@ -207,7 +242,9 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
                     Intent intent = new Intent(context, ViewSongActivity.class);
                     intent.putExtra(Constants.PLAYLIST_MODEL_KEY, currentPlaylist);
                     intent.putExtra(Constants.CURRENT_PLAYING_SONG_POSITION, currentSongPosition);
-                    intent.putExtra(Constants.IS_PLAYING, musicSrv.isPlaying());
+                    if (musicSrv != null)
+                        intent.putExtra(Constants.IS_PLAYING, musicSrv.isPlaying());
+                    else intent.putExtra(Constants.IS_PLAYING, false);
                     context.startActivity(intent);
                 }
             }
@@ -313,6 +350,15 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         }
     }
 
+    /*@Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_HEADSETHOOK){
+            Toast.makeText(context, "Headset button clicked", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }*/
+
     public void mainStuff() {
         /*File rootFile = new File(Environment.getExternalStorageDirectory().getPath()*//* + "/SHAREit/files/audios/"*//*);
         fetchSongFilesTask = new FetchSongFilesTask(this);
@@ -383,8 +429,9 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
     @Override
     protected void onStop() {
         super.onStop();
-        pref.setCurrentPlayingSong(currentPlaylist.getSongs().get(currentSongPosition).getId());
-        pref.setCurrentPlayingSongPosition(musicSrv.getSongPosition());
+        if (currentPlaylist != null)
+            pref.setCurrentPlayingSong(currentPlaylist.getSongs().get(currentSongPosition).getId());
+        if (musicSrv != null) pref.setCurrentPlayingSongPosition(musicSrv.getSongPosition());
     }
 
     @Override

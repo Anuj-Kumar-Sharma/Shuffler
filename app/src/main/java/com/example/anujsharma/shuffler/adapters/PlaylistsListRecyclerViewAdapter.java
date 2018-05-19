@@ -1,15 +1,16 @@
 package com.example.anujsharma.shuffler.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
 import com.example.anujsharma.shuffler.R;
 import com.example.anujsharma.shuffler.models.Playlist;
 import com.example.anujsharma.shuffler.utilities.Constants;
+import com.example.anujsharma.shuffler.utilities.Utilities;
 import com.example.anujsharma.shuffler.viewHolders.PlaylistsListViewHolder;
 
 import java.util.List;
@@ -58,10 +59,12 @@ public class PlaylistsListRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
         String count = playlist.getTracksCount() + " TRACKS";
         playlistsListViewHolder.tvPlaylistTrackCount.setText(count);
 
-        if (!playlist.getArtworkUrl().isEmpty()) {
-            Glide.with(context)
-                    .load(playlist.getArtworkUrl())
-                    .into(playlistsListViewHolder.ivPlaylistArtwork);
+        if (playlist.getPlaylistArtworkBlob() != null && playlist.getPlaylistArtworkBlob().length != 0) {
+            Bitmap bitmap = Utilities.getBitmapFromBytes(playlist.getPlaylistArtworkBlob());
+            /*Glide.with(context)
+                    .load(bitmap)
+                    .into(playlistsListViewHolder.ivPlaylistArtwork);*/
+            playlistsListViewHolder.ivPlaylistArtwork.setImageBitmap(bitmap);
         }
     }
 

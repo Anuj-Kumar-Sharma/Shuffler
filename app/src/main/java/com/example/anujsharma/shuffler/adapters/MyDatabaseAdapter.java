@@ -5,10 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.widget.ImageView;
+import android.util.Log;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.example.anujsharma.shuffler.backgroundTasks.GetMergedBitmap;
 import com.example.anujsharma.shuffler.models.HybridModel;
 import com.example.anujsharma.shuffler.models.Playlist;
 import com.example.anujsharma.shuffler.models.Song;
@@ -114,6 +113,7 @@ public class MyDatabaseAdapter {
                         cursor.getString(cursor.getColumnIndex(MySqliteHelper.PLAYLIST_TITLE)),
                         cursor.getInt(cursor.getColumnIndex(MySqliteHelper.PLAYLIST_TRACK_COUNT)),
                         cursor.getString(cursor.getColumnIndex(MySqliteHelper.ARTWORK_URL)));
+                playlist.setPlaylistArtworkBlob(cursor.getBlob(cursor.getColumnIndex(MySqliteHelper.PLAYLIST_ARTWORK_BLOB)));
                 playlistsList.add(playlist);
             } while (cursor.moveToNext());
         }
@@ -131,6 +131,7 @@ public class MyDatabaseAdapter {
         contentValues.put(MySqliteHelper.PLAYLIST_TITLE, playlist.getTitle());
         contentValues.put(MySqliteHelper.PLAYLIST_TRACK_COUNT, playlist.getTracksCount());
         contentValues.put(MySqliteHelper.ARTWORK_URL, playlist.getArtworkUrl());
+        contentValues.put(MySqliteHelper.PLAYLIST_ARTWORK_BLOB, playlist.getPlaylistArtworkBlob());
 
         long insert_id = sqLiteDatabase.insert(MySqliteHelper.PLAYLISTS_LIST_TABLE, null, contentValues);
         if (onDatabaseChanged != null) onDatabaseChanged.onPlaylistAdded();
@@ -171,6 +172,7 @@ public class MyDatabaseAdapter {
         contentValues.put(MySqliteHelper.PLAYLIST_TITLE, playlist.getTitle());
         contentValues.put(MySqliteHelper.PLAYLIST_TRACK_COUNT, playlist.getTracksCount());
         contentValues.put(MySqliteHelper.ARTWORK_URL, playlist.getArtworkUrl());
+        contentValues.put(MySqliteHelper.PLAYLIST_ARTWORK_BLOB, playlist.getPlaylistArtworkBlob());
 
         sqLiteDatabase.update(MySqliteHelper.PLAYLISTS_LIST_TABLE, contentValues,
                 MySqliteHelper.PLAYLIST_ID + " = ?", new String[]{String.valueOf(playlist.getPlaylistId())});
@@ -179,53 +181,52 @@ public class MyDatabaseAdapter {
         if (onDatabaseChanged != null) onDatabaseChanged.onPlaylistUpdated(position);
     }
 
-    public void addSongToPlaylist(Song song, Playlist playlist, int position) {
-        ContentValues contentValues = new ContentValues();
-        SQLiteDatabase sqLiteDatabase = mySqliteHelper.getWritableDatabase();
+    public boolean addSongToPlaylist(Song song, final Playlist playlist, final int position) {
+        if (!containsSongInPlaylist(song, playlist)) {
+            ContentValues contentValues = new ContentValues();
+            SQLiteDatabase sqLiteDatabase = mySqliteHelper.getWritableDatabase();
 
-        contentValues.put(MySqliteHelper.SONG_ID, song.getId());
-        contentValues.put(MySqliteHelper.PLAYLIST_ID, playlist.getPlaylistId());
-        contentValues.put(MySqliteHelper.SONG_ARTIST_ID, song.getUser_id());
-        contentValues.put(MySqliteHelper.SONG_DURATION, song.getDuration());
-        contentValues.put(MySqliteHelper.SONG_TITLE, song.getTitle());
-        contentValues.put(MySqliteHelper.SONG_ARTIST_NAME, song.getArtist());
-        contentValues.put(MySqliteHelper.SONG_GENRE, song.getGenre());
-        contentValues.put(MySqliteHelper.SONG_ARTWORK_URL, song.getSongArtwork());
-        contentValues.put(MySqliteHelper.SONG_STREAM_URL, song.getStreamUrl());
-        contentValues.put(MySqliteHelper.SONG_PLAYBACK_COUNT, song.getPlaybackCount());
-        contentValues.put(MySqliteHelper.SONG_LIKES_COUNT, song.getLikesCount());
+            contentValues.put(MySqliteHelper.SONG_ID, song.getId());
+            contentValues.put(MySqliteHelper.PLAYLIST_ID, playlist.getPlaylistId());
+            contentValues.put(MySqliteHelper.SONG_ARTIST_ID, song.getUser_id());
+            contentValues.put(MySqliteHelper.SONG_DURATION, song.getDuration());
+            contentValues.put(MySqliteHelper.SONG_TITLE, song.getTitle());
+            contentValues.put(MySqliteHelper.SONG_ARTIST_NAME, song.getArtist());
+            contentValues.put(MySqliteHelper.SONG_GENRE, song.getGenre());
+            contentValues.put(MySqliteHelper.SONG_ARTWORK_URL, song.getSongArtwork());
+            contentValues.put(MySqliteHelper.SONG_STREAM_URL, song.getStreamUrl());
+            contentValues.put(MySqliteHelper.SONG_PLAYBACK_COUNT, song.getPlaybackCount());
+            contentValues.put(MySqliteHelper.SONG_LIKES_COUNT, song.getLikesCount());
 
-        sqLiteDatabase.insert(MySqliteHelper.SONGS_TABLE, null, contentValues);
-        sqLiteDatabase.close();
+            sqLiteDatabase.insert(MySqliteHelper.SONGS_TABLE, null, contentValues);
+            sqLiteDatabase.close();
 
-        playlist.setTrack_count(playlist.getTracksCount() + 1);
+            playlist.setTrack_count(playlist.getTracksCount() + 1);
 
-        if (playlist.getArtworkUrl().isEmpty() && playlist.getTracksCount() >= 4) {
-            Playlist newPlaylist = getPlaylist(playlist);
-            List<Song> songs = newPlaylist.getSongs();
-            final List<Bitmap> imageList = new ArrayList<>();
 
-            for (int i = 0; i < 4; i++) {
+            if (playlist.getTracksCount() == 1 || playlist.getTracksCount() == 4) {
+                Playlist newPlaylist = getPlaylist(playlist);
+                List<Song> songs = newPlaylist.getSongs();
 
-                Glide.with(context).
-                        load(songs.get(i).getSongArtwork()).
-                        asBitmap().
-                        into(new BitmapImageViewTarget(new ImageView(context)) {
-                            @Override
-                            protected void setResource(Bitmap resource) {
-                                //Play with bitmap
-                                imageList.add(resource);
-                                super.setResource(resource);
-                            }
-                        });
+                GetMergedBitmap getMergedBitmap = new GetMergedBitmap(context, new GetMergedBitmap.MergedBitmapCallback() {
+                    @Override
+                    public void onBitmapReady(Bitmap bitmap) {
+                        updatePlaylist(playlist, bitmap, position);
+                    }
+                });
 
+                getMergedBitmap.execute(songs);
+                return true;
             }
-
-            Bitmap bitmap = Utilities.mergeThemAll(imageList);
-
-
-//            playlist.setArtwork_url(location);
+            updatePlaylist(playlist, position);
+            return true;
         }
+        return false;
+    }
+
+    public void updatePlaylist(Playlist playlist, Bitmap bitmap, int position) {
+        Log.d("TAG", "updating playlist with bitmap blob");
+        playlist.setPlaylistArtworkBlob(Utilities.getBytesFromBitmap(bitmap));
         updatePlaylist(playlist, position);
     }
 
@@ -254,6 +255,7 @@ public class MyDatabaseAdapter {
         cursor.close();
         sqLiteDatabase.close();
 
+        Collections.reverse(songs);
         playlist.setSongs(songs);
 
         return playlist;
@@ -266,6 +268,20 @@ public class MyDatabaseAdapter {
         String[] selectionArgs = new String[]{String.valueOf(playlistId)};
         sqLiteDatabase.delete(MySqliteHelper.SONGS_TABLE, selection, selectionArgs);
         sqLiteDatabase.close();
+    }
+
+    public boolean containsSongInPlaylist(Song song, Playlist playlist) {
+        SQLiteDatabase sqLiteDatabase = mySqliteHelper.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.query(MySqliteHelper.SONGS_TABLE, null,
+                MySqliteHelper.PLAYLIST_ID + " = ? AND " + MySqliteHelper.SONG_ID + " = ?", new String[]{String.valueOf(playlist.getPlaylistId()), String.valueOf(song.getId())},
+                null, null, null);
+
+        boolean containsSongInPlaylist = cursor.getCount() > 0;
+
+        cursor.close();
+        sqLiteDatabase.close();
+
+        return containsSongInPlaylist;
     }
 
     public interface OnDatabaseChanged {

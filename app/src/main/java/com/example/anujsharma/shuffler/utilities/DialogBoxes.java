@@ -55,9 +55,12 @@ public class DialogBoxes {
             SimpleRecyclerViewAdapter simpleRecyclerViewAdapter = new SimpleRecyclerViewAdapter(context, playlists, new SimpleRecyclerViewAdapter.ItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position, int check) {
-                    myDatabaseAdapter.addSongToPlaylist(song, playlists.get(position), position);
+                    boolean songAdded = myDatabaseAdapter.addSongToPlaylist(song, playlists.get(position), position);
                     dialog.dismiss();
-                    Toast.makeText(context, "Playlist saved.", Toast.LENGTH_SHORT).show();
+                    if (songAdded)
+                        Toast.makeText(context, "Playlist saved.", Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(context, "This Song is already present in the Playlist.", Toast.LENGTH_SHORT).show();
                 }
             });
 

@@ -40,6 +40,7 @@ public class PlaylistsListFragment extends Fragment {
     private MyDatabaseAdapter myDatabaseAdapter;
     private PlaylistsListRecyclerViewAdapter playlistsListRecyclerViewAdapter;
     private List<Playlist> playlists;
+    private RelativeLayout rlNoPlaylistMessage;
 
     public PlaylistsListFragment() {
         // Required empty public constructor
@@ -104,6 +105,8 @@ public class PlaylistsListFragment extends Fragment {
                                     Playlist playlist = new Playlist(id, title, 0, "");
                                     myDatabaseAdapter.createNewPlaylist(playlist);
                                     dialog.dismiss();
+                                    rlNoPlaylistMessage.setVisibility(View.GONE);
+                                    playlistsListRecyclerViewAdapter.addToPlaylistsList(myDatabaseAdapter.getPlaylistsList());
                                     Toast.makeText(context, "Playlist created successfully.", Toast.LENGTH_SHORT).show();
                                 } else {
                                     Toast.makeText(context, "Playlist '" + title + "' already exists.", Toast.LENGTH_SHORT).show();
@@ -128,6 +131,7 @@ public class PlaylistsListFragment extends Fragment {
         ivBackButton = view.findViewById(R.id.ivPlaylistsBackButton);
         ivCreatePlaylistButton = view.findViewById(R.id.ivCreatePlaylist);
         rvPlaylistsList = view.findViewById(R.id.rvPlaylistsList);
+        rlNoPlaylistMessage = view.findViewById(R.id.rlNoPlaylistMessage);
 
         myDatabaseAdapter = new MyDatabaseAdapter(context, new MyDatabaseAdapter.OnDatabaseChanged() {
             @Override
@@ -152,6 +156,13 @@ public class PlaylistsListFragment extends Fragment {
         });
 
         playlists = myDatabaseAdapter.getPlaylistsList();
+        if (playlists.size() > 0) {
+            rlNoPlaylistMessage.setVisibility(View.GONE);
+            rvPlaylistsList.setVisibility(View.VISIBLE);
+        } else {
+            rlNoPlaylistMessage.setVisibility(View.VISIBLE);
+            rvPlaylistsList.setVisibility(View.GONE);
+        }
 
         playlistsListRecyclerViewAdapter = new PlaylistsListRecyclerViewAdapter(context, new PlaylistsListRecyclerViewAdapter.ItemClickListener() {
             @Override
@@ -286,6 +297,9 @@ public class PlaylistsListFragment extends Fragment {
             public void onClick(View view) {
                 myDatabaseAdapter.deletePlaylist((int) playlist.getPlaylistId(), position);
                 dialog.dismiss();
+                if (myDatabaseAdapter.getPlaylistsList().size() == 0) {
+                    rlNoPlaylistMessage.setVisibility(View.VISIBLE);
+                }
             }
         });
     }

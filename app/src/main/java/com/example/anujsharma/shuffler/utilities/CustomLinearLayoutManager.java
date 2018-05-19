@@ -12,10 +12,12 @@ import android.util.Log;
 public class CustomLinearLayoutManager extends LinearLayoutManager {
 
     private Context context;
+    private MyErrorListener myErrorListener;
 
-    public CustomLinearLayoutManager(Context context) {
+    public CustomLinearLayoutManager(Context context, MyErrorListener myErrorListener) {
         super(context);
         this.context = context;
+        this.myErrorListener = myErrorListener;
     }
 
     @Override
@@ -23,7 +25,12 @@ public class CustomLinearLayoutManager extends LinearLayoutManager {
         try {
             super.onLayoutChildren(recycler, state);
         } catch (IndexOutOfBoundsException e) {
+            myErrorListener.onIoobeFound();
             Log.e("TAG", "meet a IOOBE in RecyclerView");
         }
+    }
+
+    public interface MyErrorListener {
+        void onIoobeFound();
     }
 }

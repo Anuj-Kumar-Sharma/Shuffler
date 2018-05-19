@@ -20,6 +20,7 @@
             android:layout_height="match_parent"
             android:padding="@dimen/_12sdp"
             android:tint="@color/transparent_white"
+            android:background="?android:attr/selectableItemBackground"
             app:srcCompat="@drawable/ic_down_arrow" />
 
         <com.example.anujsharma.shuffler.fonts.TypefaceTextView
@@ -58,6 +59,7 @@
             android:layout_alignParentEnd="true"
             android:padding="@dimen/_12sdp"
             android:tint="@color/transparent_white"
+            android:background="?android:attr/selectableItemBackground"
             app:srcCompat="@drawable/ic_playlist" />
 
     </RelativeLayout>
@@ -98,6 +100,7 @@
                 android:layout_weight="1"
                 android:padding="@dimen/_12sdp"
                 android:tint="@color/transparent_white"
+                android:background="?android:attr/selectableItemBackground"
                 app:srcCompat="@drawable/ic_add" />
 
             <LinearLayout
@@ -142,6 +145,7 @@
                 android:layout_weight="1"
                 android:padding="@dimen/_12sdp"
                 android:tint="@color/transparent_white"
+                android:background="?android:attr/selectableItemBackground"
                 app:srcCompat="@drawable/ic_three_dots" />
 
         </LinearLayout>
@@ -195,12 +199,13 @@
             android:paddingLeft="@dimen/_12sdp"
             android:paddingRight="@dimen/_12sdp">
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/ivShuffle"
                 android:layout_width="@dimen/_42sdp"
                 android:layout_height="@dimen/_42sdp"
                 android:padding="@dimen/_12sdp"
                 android:tint="@color/transparent_white"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
                 app:srcCompat="@drawable/ic_shuffle" />
 
             <ImageView
@@ -209,6 +214,7 @@
                 android:layout_height="@dimen/_48sdp"
                 android:padding="@dimen/_12sdp"
                 android:tint="@color/white"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
                 app:srcCompat="@drawable/ic_previous" />
 
             <ImageView
@@ -217,6 +223,7 @@
                 android:layout_height="@dimen/_84sdp"
                 android:padding="@dimen/_12sdp"
                 android:tint="@color/white"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
                 app:srcCompat="@drawable/ic_play" />
 
             <ImageView
@@ -225,6 +232,7 @@
                 android:layout_height="@dimen/_48sdp"
                 android:padding="@dimen/_12sdp"
                 android:tint="@color/white"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
                 app:srcCompat="@drawable/ic_next" />
 
             <ImageView
@@ -233,6 +241,7 @@
                 android:layout_height="@dimen/_42sdp"
                 android:padding="@dimen/_12sdp"
                 android:tint="@color/transparent_white"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
                 app:srcCompat="@drawable/ic_repeat" />
         </LinearLayout>
 
