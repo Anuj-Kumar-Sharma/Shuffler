@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Shuffler</string>
+    <string name="app_name">Smynd</string>
     <string name="shared_pref_name">Shuffler</string>
     <string name="action_settings">Settings</string>
 
@@ -51,4 +51,6 @@
     <string name="no_playlist_message">You do not have any playlists yet. Create one now.</string>
     <string name="no_search_history_message">It\'s pretty quiet in here. Search something above.</string>
     <string name="no_internet_connection_message">No Internet connection. Try again when you are connected to the Internet.</string>
+    <string name="remove_from_playlist">Remove from Playlist</string>
+    <string name="playback_channel_name">channelName</string>
 </resources>

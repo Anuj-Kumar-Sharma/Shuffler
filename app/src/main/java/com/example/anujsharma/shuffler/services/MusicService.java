@@ -1,5 +1,6 @@
 package com.example.anujsharma.shuffler.services;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -50,6 +52,9 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     private AudioManager audioManager;
     private NotificationGenerator notificationGenerator;
     private ArrayList<Integer> shuffleSongList;
+    private AsyncTask<Void, Integer, Integer> seekBarTask;
+    private Handler handler;
+
 
     @Override
     public void onCreate() {
@@ -59,7 +64,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         initialise();
     }
 
-    private void initialise() {
+    public void initialise() {
         context = this;
         pref = new SharedPreference(context);
         playlist = pref.getCurrentPlaylist();
@@ -82,6 +87,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         mp.setOnBufferingUpdateListener(this);
         mp.setOnPreparedListener(this);
         mp.setOnSeekCompleteListener(this);
+        handler = new Handler(Looper.getMainLooper());
     }
 
     //activity will bind to service
@@ -112,7 +118,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     public void onCompletion(MediaPlayer mediaPlayer) {
         //check if playback has reached the end of a track
         if (mp.getCurrentPosition() > 0) {
-            if (songPosition != pref.getCurrentPlaylist().getSongs().size() - 1) mp.reset();
+            if (songPosition != playlist.getSongs().size() - 1) mp.reset();
             playNext();
         }
     }
@@ -124,14 +130,25 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         return false;
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public void onPrepared(MediaPlayer mp) {
         audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
         mp.start();
         setState(Constants.MUSIC_STARTED);
         notificationGenerator.updateView(true, songPosition);
-        final Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int current = getPosition();
+                if (viewMusicInterface != null) viewMusicInterface.onMusicProgress(current / 100);
+                if (songPosition < playlist.getSongs().size())
+                    musicServiceInterface.onMusicProgress((int) ((current * 10000) / playlist.getSongs().get(songPosition).getDuration()));
+                handler.postDelayed(this, 100);
+            }
+        }, 100);
+/*
+        Thread runnable = new Thread() {
             @Override
             public void run() {
                 int current = getPosition();
@@ -140,7 +157,39 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                     musicServiceInterface.onMusicProgress((int) ((current * 10000) / pref.getCurrentPlaylist().getSongs().get(songPosition).getDuration()));
                 handler.postDelayed(this, 100);
             }
-        }, 100);
+        };
+
+        handler.post(runnable);*/
+
+
+        /*seekBarTask = new AsyncTask<Void, Integer, Integer>() {
+            @Override
+            protected Integer doInBackground(Void... voids) {
+                int current = 0;
+                int currentlyPlaying = pref.getCurrentPlayingSongPosition();
+                while (current < pref.getCurrentPlaylist().getSongs().get(pref.getCurrentPlayingSongPosition()).getDuration()) {
+                    onProgressUpdate(current / 100);
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    current = getPosition();
+                    if(currentlyPlaying != pref.getCurrentPlayingSongPosition()) {
+                        Log.d("TAGService", currentlyPlaying +" " + pref.getCurrentPlayingSongPosition());
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            protected void onProgressUpdate(Integer... values) {
+                super.onProgressUpdate(values);
+                if (viewMusicInterface != null) viewMusicInterface.onMusicProgress(values[0]);
+            }
+        };
+//        seekBarTask.cancel(true);
+        seekBarTask.execute();*/
     }
 
     @Override
@@ -157,7 +206,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     }
 
     public void startSong() {
-        final Song song = pref.getCurrentPlaylist().getSongs().get(songPosition);
+        final Song song = playlist.getSongs().get(songPosition);
 
         showNotification(song);
 
@@ -233,7 +282,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         } else {
             if (songPosition == 0) {
                 if (pref.getIsRepeatOn())
-                    songPosition = pref.getCurrentPlaylist().getSongs().size() - 1;
+                    songPosition = playlist.getSongs().size() - 1;
                 else {
                     setState(Constants.MUSIC_ENDED);
                     notificationGenerator.updateView(false, songPosition);
@@ -251,7 +300,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
             songPosition = FisherYatesShuffle.getNextShufflePosition(context);
 
         } else {
-            if (songPosition == pref.getCurrentPlaylist().getSongs().size() - 1) {
+            if (songPosition == playlist.getSongs().size() - 1) {
                 if (pref.getIsRepeatOn())
                     songPosition = 0;
                 else {
@@ -278,12 +327,12 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        notificationGenerator.showSongNotification(context, songPosition, resource);
+                        notificationGenerator.showSongNotification(context, songPosition, playlist, resource);
                     }
 
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        notificationGenerator.showSongNotification(context, songPosition, null);
+                        notificationGenerator.showSongNotification(context, songPosition, playlist, null);
                     }
                 });
     }
@@ -308,10 +357,14 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
     public void setState(int state) {
         this.state = state;
-        musicServiceInterface.onMusicDisturbed(state, pref.getCurrentPlaylist().getSongs().get(songPosition));
+        musicServiceInterface.onMusicDisturbed(state, playlist.getSongs().get(songPosition));
         if (viewMusicInterface != null) {
-            viewMusicInterface.onMusicDisturbed(state, pref.getCurrentPlaylist().getSongs().get(songPosition));
+            viewMusicInterface.onMusicDisturbed(state, playlist.getSongs().get(songPosition));
         }
+    }
+
+    public void setPlaylist(Playlist playlist) {
+        this.playlist = playlist;
     }
 
     public interface MusicServiceInterface {

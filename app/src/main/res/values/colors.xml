@@ -12,4 +12,7 @@
     <color name="transparent_black">#d80a0a0a</color>
     <color name="bottom_gradient">#e6000000</color>
     <color name="transparent_white">#96ffffff</color>
+    <color name="background_gradient_top">#6814D1</color>
+    <color name="background_gradient_bottom">#C62686</color>
+
 </resources>

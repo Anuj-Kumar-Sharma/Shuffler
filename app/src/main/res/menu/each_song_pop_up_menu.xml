@@ -17,4 +17,9 @@
         android:id="@+id/popAddToPlaylist"
         android:title="@string/add_to_playlist" />
 
+    <item
+        android:id="@+id/popRemoveFromPlaylist"
+        android:title="@string/remove_from_playlist"
+        android:visible="false" />
+
 </menu>

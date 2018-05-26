@@ -21,11 +21,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustNothing">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activities.ViewSongActivity"
@@ -38,16 +34,29 @@
             android:value="GlideModule" />
 
         <service
-            android:name="com.example.anujsharma.shuffler.services.MusicService"
+            android:name=".services.MusicService"
             android:enabled="true" />
+        <service
+            android:name=".services.ExoPlayerService"
+            android:stopWithTask="true" />
 
-        <receiver android:name="com.example.anujsharma.shuffler.receivers.NotificationBroadcast">
+        <receiver android:name=".receivers.NotificationBroadcast">
             <intent-filter>
                 <action android:name="com.example.anujsharma.shuffler.utilities.nextClick" />
                 <action android:name="com.example.anujsharma.shuffler.utilities.previousClick" />
                 <action android:name="com.example.anujsharma.shuffler.utilities.playPauseClick" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".activities.SplashScreenActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

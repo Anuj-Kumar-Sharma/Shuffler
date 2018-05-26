@@ -28,6 +28,7 @@ public class MyDatabaseAdapter {
     private Context context;
     private List<HybridModel> historyList;
     private OnDatabaseChanged onDatabaseChanged;
+    private OnAPlaylistDataChanged onAPlaylistDataChanged;
 
     public MyDatabaseAdapter(Context context) {
         this.context = context;
@@ -37,6 +38,12 @@ public class MyDatabaseAdapter {
     public MyDatabaseAdapter(Context context, OnDatabaseChanged onDatabaseChanged) {
         this.context = context;
         this.onDatabaseChanged = onDatabaseChanged;
+        mySqliteHelper = new MySqliteHelper(context);
+    }
+
+    public MyDatabaseAdapter(Context context, OnAPlaylistDataChanged onAPlaylistDataChanged) {
+        this.context = context;
+        this.onAPlaylistDataChanged = onAPlaylistDataChanged;
         mySqliteHelper = new MySqliteHelper(context);
     }
 
@@ -200,7 +207,8 @@ public class MyDatabaseAdapter {
 
             sqLiteDatabase.insert(MySqliteHelper.SONGS_TABLE, null, contentValues);
             sqLiteDatabase.close();
-
+            if (onAPlaylistDataChanged != null)
+                onAPlaylistDataChanged.onASongAdded((int) playlist.getPlaylistId());
             playlist.setTrack_count(playlist.getTracksCount() + 1);
 
 
@@ -256,6 +264,7 @@ public class MyDatabaseAdapter {
         sqLiteDatabase.close();
 
         Collections.reverse(songs);
+        playlist.setTrack_count(songs.size());
         playlist.setSongs(songs);
 
         return playlist;
@@ -268,6 +277,24 @@ public class MyDatabaseAdapter {
         String[] selectionArgs = new String[]{String.valueOf(playlistId)};
         sqLiteDatabase.delete(MySqliteHelper.SONGS_TABLE, selection, selectionArgs);
         sqLiteDatabase.close();
+    }
+
+    public void deleteASongFromPlaylist(Playlist playlist, int songId, int position) {
+        SQLiteDatabase sqLiteDatabase = mySqliteHelper.getWritableDatabase();
+        String selection = MySqliteHelper.PLAYLIST_ID + " = ? AND " + MySqliteHelper.SONG_ID + " = ?";
+
+        String[] selectionArgs = new String[]{String.valueOf(playlist.getPlaylistId()), String.valueOf(songId)};
+        sqLiteDatabase.delete(MySqliteHelper.SONGS_TABLE, selection, selectionArgs);
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MySqliteHelper.PLAYLIST_TRACK_COUNT, playlist.getTracksCount() - 1);
+
+        sqLiteDatabase.update(MySqliteHelper.PLAYLISTS_LIST_TABLE, contentValues,
+                MySqliteHelper.PLAYLIST_ID + " = ?", new String[]{String.valueOf(playlist.getPlaylistId())});
+
+        sqLiteDatabase.close();
+        if (onAPlaylistDataChanged != null)
+            onAPlaylistDataChanged.onASongRemoved((int) playlist.getPlaylistId(), position);
     }
 
     public boolean containsSongInPlaylist(Song song, Playlist playlist) {
@@ -292,5 +319,11 @@ public class MyDatabaseAdapter {
         void onPlaylistUpdated(int position);
 
 //        void onSongAdded();
+    }
+
+    public interface OnAPlaylistDataChanged {
+        void onASongAdded(int playlistId);
+
+        void onASongRemoved(int playlistId, int position);
     }
 }

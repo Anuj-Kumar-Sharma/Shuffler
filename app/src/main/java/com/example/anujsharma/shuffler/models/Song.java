@@ -1,7 +1,12 @@
 package com.example.anujsharma.shuffler.models;
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.media.MediaDescriptionCompat;
+
+import com.example.anujsharma.shuffler.utilities.Utilities;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -160,6 +165,28 @@ public class Song implements Parcelable {
     public int getFavoritngsCount() {
         return favoritngsCount;
     }
+
+    public MediaDescriptionCompat getMediaDescription(Context context) {
+        /*MediaDescriptionCompat mediaDescriptionCompat;
+        new GetBitmapFromImageUrlTask(context, new GetBitmapFromImageUrlTask.BitmapFromUrlCallback() {
+            @Override
+            public void onBitmapFound(Bitmap bitmap) {
+                mediaDescriptionCompat = new MediaDescriptionCompat.Builder()
+                        .setTitle(getTitle())
+                        .setMediaId(getId()+"")
+                        .setIconBitmap(bitmap)
+                        .build();
+            }
+        }).execute(Utilities.getLargeArtworkUrl(getSongArtwork()));*/
+
+        return new MediaDescriptionCompat.Builder()
+                .setTitle(getTitle())
+                .setMediaId(getId() + "")
+                .setDescription(getArtist())
+                .setIconUri(Uri.parse(Utilities.getLargeArtworkUrl(getSongArtwork())))
+                .build();
+    }
+
 
     @Override
     public int describeContents() {

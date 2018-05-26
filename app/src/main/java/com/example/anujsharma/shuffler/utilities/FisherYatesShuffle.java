@@ -9,6 +9,7 @@ import java.util.Random;
 public class FisherYatesShuffle {
 
     public static int getNextShufflePosition(Context context) {
+
         SharedPreference pref = new SharedPreference(context);
         ArrayList<Integer> playlistShuffleArray = pref.getCurrentPlaylistShuffleArray();
         int currentShufflePosition = pref.getCurrentShuffleSongPosition();
@@ -29,6 +30,10 @@ public class FisherYatesShuffle {
         playlistShuffleArray.set(randomPosition, playlistShuffleArray.get(currentShufflePosition));
         playlistShuffleArray.set(currentShufflePosition, randomElement);
         currentShufflePosition++;
+
+        /*RecursiveLeastSquare recursiveLeastSquare = new RecursiveLeastSquare(new Matrix(2, 2), new Matrix(2, 2));
+        recursiveLeastSquare.updateWithData(new Matrix(2, 2), new Matrix(2, 2));
+        recursiveLeastSquare.getB();*/
 
         pref.setCurrentPlaylistShuffleArray(playlistShuffleArray);
         pref.setCurrentShuffleSongPosition(currentShufflePosition);

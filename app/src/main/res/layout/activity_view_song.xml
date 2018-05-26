@@ -158,7 +158,7 @@
 
             <com.example.anujsharma.shuffler.fonts.TypefaceTextView
                 android:id="@+id/tvCurrentTime"
-                android:layout_width="@dimen/_36sdp"
+                android:layout_width="@dimen/_48sdp"
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/_12sdp"
                 android:paddingLeft="@dimen/_12sdp"
@@ -180,7 +180,7 @@
 
             <com.example.anujsharma.shuffler.fonts.TypefaceTextView
                 android:id="@+id/tvDuration"
-                android:layout_width="@dimen/_36sdp"
+                android:layout_width="@dimen/_48sdp"
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/_12sdp"
                 android:paddingRight="@dimen/_12sdp"

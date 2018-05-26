@@ -209,6 +209,16 @@ public class SeeAllRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         this.notifyDataSetChanged();
     }
 
+    public void notifySongRemovedFromPlaylist(List<Song> songs, int position) {
+        this.songs = songs;
+        this.notifyItemRemoved(position);
+    }
+
+    public void notifySongAddedToPlaylist(List<Song> songs) {
+        this.songs = songs;
+        this.notifyDataSetChanged();
+    }
+
     public interface ItemClickListener {
         void onItemClick(View view, int position, int check);
     }

@@ -38,6 +38,7 @@ public class Constants {
     public static final String USER_ID_KEY = "user_id";
     public static final String USERS_MODEL_KEY = "users";
     public static final String SONGS_MODEL_KEY = "songs";
+    public static final String SONG_POSITION_MODEL_KEY = "song_position";
     public static final String FRAGMENT_HOME = "homeFragment";
     public static final String FRAGMENT_MYPROFILE = "myProfileFragment";
     public static final String FRAGMENT_YOUR_LIBRARY = "yourLibraryFragment";
@@ -69,6 +70,8 @@ public class Constants {
 
     public static final String NOTIFICATION_SONG_CHANNEL_ID = "songChannelId";
     public static final int NOTIFICATION_SONG_ID = 1;
+    public static final String MEDIA_SESSION_TAG = "smynd_media_session";
+
 
     public static final String CLICK_NEXT = "com.example.anujsharma.shuffler.utilities.nextClick";
     public static final String CLICK_PREVIOUS = "com.example.anujsharma.shuffler.utilities.previousClick";
@@ -80,4 +83,6 @@ public class Constants {
     public static final int SHOW_NO_INTERNET_CONNECTION = 34;
     public static final int SHOW_PROGRESS_BAR = 35;
     public static final int SHOW_RECYCLER_VIEW = 36;
+
+
 }

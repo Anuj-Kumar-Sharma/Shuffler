@@ -44,4 +44,7 @@ dependencies {
     implementation 'com.android.support:multidex:+'
     implementation 'com.android.support:palette-v7:27.0.2'
     implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.8.1'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.8.1'
+    implementation 'com.google.android.exoplayer:extension-mediasession:2.8.1'
 }

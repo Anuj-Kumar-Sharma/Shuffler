@@ -13,7 +13,6 @@ import com.example.anujsharma.shuffler.R;
 import com.example.anujsharma.shuffler.activities.MainActivity;
 import com.example.anujsharma.shuffler.models.Playlist;
 import com.example.anujsharma.shuffler.utilities.Constants;
-import com.example.anujsharma.shuffler.utilities.SharedPreference;
 
 /**
  * Created by anuj5 on 16-01-2018.
@@ -28,10 +27,8 @@ public class NotificationGenerator {
     private int currentSongPosition;
     private boolean isPlaying = true;
 
-    public void showSongNotification(Context context, int currentSongPosition, Bitmap bitmap) {
+    public void showSongNotification(Context context, int currentSongPosition, Playlist currentPlaylist, Bitmap bitmap) {
 
-        SharedPreference pref = new SharedPreference(context);
-        Playlist currentPlaylist = pref.getCurrentPlaylist();
         this.currentSongPosition = currentSongPosition;
 
         remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_song);

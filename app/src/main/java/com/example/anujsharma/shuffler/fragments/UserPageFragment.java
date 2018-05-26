@@ -14,11 +14,15 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionInflater;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +31,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.example.anujsharma.shuffler.R;
 import com.example.anujsharma.shuffler.activities.MainActivity;
+import com.example.anujsharma.shuffler.adapters.MyDatabaseAdapter;
 import com.example.anujsharma.shuffler.adapters.SeeAllRecyclerViewAdapter;
 import com.example.anujsharma.shuffler.adapters.UserPageRecyclerViewAdapter;
 import com.example.anujsharma.shuffler.backgroundTasks.GetColorPaletteFromImageUrl;
@@ -70,6 +75,7 @@ public class UserPageFragment extends Fragment implements RequestCallback {
     private int TYPE;
     private GetColorPaletteFromImageUrl getColorPaletteFromImageUrl;
     private GradientDrawable gd;
+    private MyDatabaseAdapter myDatabaseAdapter;
 
     public UserPageFragment() {
         // Required empty public constructor
@@ -86,6 +92,26 @@ public class UserPageFragment extends Fragment implements RequestCallback {
         tracksDao = new TracksDao(context, this);
         usersDao = new UsersDao(context, this);
         playlistsDao = new PlaylistsDao(context, this);
+        myDatabaseAdapter = new MyDatabaseAdapter(context, new MyDatabaseAdapter.OnAPlaylistDataChanged() {
+
+            @Override
+            public void onASongAdded(int playlistId) {
+                currentPlaylist = myDatabaseAdapter.getPlaylist(currentPlaylist);
+                songs = (ArrayList<Song>) currentPlaylist.getSongs();
+                seeAllRecyclerViewAdapter.notifySongAddedToPlaylist(songs);
+                String tvText = String.format("PLAYLIST  •  %d TRACKS", currentPlaylist.getTracksCount());
+                tvFollowersCount.setText(tvText);
+            }
+
+            @Override
+            public void onASongRemoved(int playlistId, int position) {
+                currentPlaylist = myDatabaseAdapter.getPlaylist(currentPlaylist);
+                songs = (ArrayList<Song>) currentPlaylist.getSongs();
+                seeAllRecyclerViewAdapter.notifySongRemovedFromPlaylist(songs, position);
+                String tvText = String.format("PLAYLIST  •  %d TRACKS", currentPlaylist.getTracksCount());
+                tvFollowersCount.setText(tvText);
+            }
+        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setSharedElementEnterTransition(TransitionInflater.from(context).inflateTransition(android.R.transition.move));
@@ -117,7 +143,7 @@ public class UserPageFragment extends Fragment implements RequestCallback {
                 currentPlaylist = bundle.getParcelable(Constants.PLAYLIST_MODEL_KEY);
                 seeAllRecyclerViewAdapter = new SeeAllRecyclerViewAdapter(context, songs, null, null, new SeeAllRecyclerViewAdapter.ItemClickListener() {
                     @Override
-                    public void onItemClick(View view, int position, int check) {
+                    public void onItemClick(View view, final int position, int check) {
                         switch (check) {
                             case Constants.EACH_SONG_LAYOUT_CLICKED:
                                 Playlist playlist = currentPlaylist;
@@ -127,7 +153,39 @@ public class UserPageFragment extends Fragment implements RequestCallback {
                                 changeSelectedPosition(position);
                                 break;
                             case Constants.EACH_SONG_MENU_CLICKED:
+                                PopupMenu popupMenu = new PopupMenu(new ContextThemeWrapper(context, R.style.PopupMenu), view);
+                                popupMenu.getMenuInflater().inflate(R.menu.each_song_pop_up_menu, popupMenu.getMenu());
+                                Menu menu = popupMenu.getMenu();
+                                menu.findItem(R.id.popAddToPlaylist).setVisible(false);
+                                menu.findItem(R.id.popRemoveFromPlaylist).setVisible(true);
+                                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                    @Override
+                                    public boolean onMenuItemClick(MenuItem item) {
+                                        switch (item.getItemId()) {
+                                            case R.id.popGotoArtistProfile:
+                                                UserPageFragment userPageFragment = new UserPageFragment();
+                                                Bundle bundle = new Bundle();
+                                                bundle.putInt(Constants.TYPE, Constants.TYPE_USER);
+                                                bundle.putLong(Constants.USER_ID_KEY, songs.get(position).getUser_id());
+                                                userPageFragment.setArguments(bundle);
+                                                getFragmentManager().beginTransaction().replace(R.id.mainFrameContainer, userPageFragment, Constants.FRAGMENT_USER_PAGE).
+                                                        addToBackStack(null).commit();
+                                                return true;
+                                            case R.id.popLike:
 
+                                                return true;
+                                            case R.id.popShare:
+
+                                                return true;
+                                            case R.id.popRemoveFromPlaylist:
+                                                myDatabaseAdapter.deleteASongFromPlaylist(currentPlaylist, (int) songs.get(position).getId(), position);
+                                                return true;
+
+                                        }
+                                        return false;
+                                    }
+                                });
+                                popupMenu.show();
                                 break;
                         }
                     }
@@ -146,6 +204,12 @@ public class UserPageFragment extends Fragment implements RequestCallback {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+//        onCreate(null);
+    }
+
     private void initialiseListeners() {
         ivBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,6 +226,7 @@ public class UserPageFragment extends Fragment implements RequestCallback {
                         Toast.makeText(context, "Cannot shuffle this playlist.", Toast.LENGTH_SHORT).show();
                         break;
                     case Constants.TYPE_PLAYLIST:
+                        pref.setIsShuffleOn(true);
                         ((MainActivity) getActivity()).playSongInMainActivity(0, currentPlaylist);
                         break;
 

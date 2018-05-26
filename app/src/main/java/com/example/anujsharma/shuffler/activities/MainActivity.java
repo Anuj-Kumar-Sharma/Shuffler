@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -30,13 +29,14 @@ import com.example.anujsharma.shuffler.fragments.SearchFragment;
 import com.example.anujsharma.shuffler.fragments.YourLibraryFragment;
 import com.example.anujsharma.shuffler.models.Playlist;
 import com.example.anujsharma.shuffler.models.Song;
-import com.example.anujsharma.shuffler.receivers.MediaButtonBroadcast;
+import com.example.anujsharma.shuffler.services.ExoPlayerService;
 import com.example.anujsharma.shuffler.services.MusicService;
 import com.example.anujsharma.shuffler.utilities.Constants;
 import com.example.anujsharma.shuffler.utilities.FisherYatesShuffle;
 import com.example.anujsharma.shuffler.utilities.SharedPreference;
 import com.example.anujsharma.shuffler.volley.RequestCallback;
 import com.example.anujsharma.shuffler.volley.Urls;
+import com.google.android.exoplayer2.util.Util;
 
 import java.util.ArrayList;
 
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
     public static final String HOME_FRAGMENT = "homeFragment";
     public static final String SEARCH_FRAGMENT = "searchFragment";
     public static final String YOUR_LIBRARY_FRAGMENT = "yourLibraryFragment";
+
     //service
     public static MusicService musicSrv;
     private final int REQUEST_PERMS_CODE = 1;
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
     private TracksDao tracksDao;
     private int currentSongPosition;
     private Playlist currentPlaylist;
-    private Intent playIntent;
+    private Intent playIntent, exoIntent;
     //binding
     private boolean musicBound = false;
     //connect to the service
@@ -123,16 +124,14 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MediaButtonBroadcast mMediaButtonReceiver = new MediaButtonBroadcast();
-        IntentFilter mediaFilter = new IntentFilter(Intent.ACTION_MEDIA_BUTTON);
-        mediaFilter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
-        registerReceiver(mMediaButtonReceiver, mediaFilter);
+       /*Intent splashIntent = new Intent(MainActivity.this, SplashScreenActivity.class);
+       startActivity(splashIntent);*/
 
-        if (playIntent == null) {
+        /*if (playIntent == null) {
             playIntent = new Intent(getBaseContext(), MusicService.class);
             bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
             startService(playIntent);
-        }
+        }*/
 
         initialise();
         initialiseListeners();
@@ -142,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
             requestPermissions();
         }
 
-        Intent notificationIntent = getIntent();
+        /*Intent notificationIntent = getIntent();
         boolean fromNotification = notificationIntent.getBooleanExtra(Constants.FROM_NOTIFICATION, false);
         if (fromNotification) {
 
@@ -155,7 +154,12 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
             intent.putExtra(Constants.CURRENT_PLAYING_SONG_POSITION, currentSongPosition);
             intent.putExtra(Constants.IS_PLAYING, isPlaying);
             context.startActivity(intent);
-        }
+        }*/
+
+        exoIntent = new Intent(this, ExoPlayerService.class);
+        exoIntent.putExtra(Constants.PLAYLIST_MODEL_KEY, pref.getCurrentPlaylist());
+        exoIntent.putExtra(Constants.SONG_POSITION_MODEL_KEY, pref.getCurrentPlayingSongPosition());
+        Util.startForegroundService(this, exoIntent);
     }
 
     public void playSongInMainActivity(int songPosition, Playlist playlist) {
@@ -180,9 +184,10 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         String url = song.getStreamUrl() + "?client_id=" + Urls.CLIENT_ID;
         Log.d("TAG", "currently playing " + url);
 
-        musicSrv.setSongPosition(songPosition);
+        /*musicSrv.setSongPosition(songPosition);
         musicSrv.setSongs(playlist.getSongs());
-        musicSrv.startSong();
+        musicSrv.setPlaylist(playlist);
+        musicSrv.startSong();*/
     }
 
     public void updatePlaylistInMainActivity(Playlist playlist) {
@@ -192,33 +197,31 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        stopService(playIntent);
-        musicSrv = null;
-        unbindService(musicConnection);
-    }
-
     private void initialiseListeners() {
 
         ivPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (pref.getCurrentPlaylist() != null)
+                currentPlaylist = pref.getCurrentPlaylist();
+                if (currentPlaylist != null) {
+                    musicSrv.setPlaylist(currentPlaylist);
                     if (musicSrv.isPlaying()) {
                         musicSrv.pausePlayer();
                     } else {
                         musicSrv.go();
                     }
+                }
             }
         });
 
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (pref.getCurrentPlaylist() != null)
+                currentPlaylist = pref.getCurrentPlaylist();
+                if (currentPlaylist != null) {
+                    musicSrv.setPlaylist(currentPlaylist);
                     musicSrv.playNext();
+                }
             }
         });
 
@@ -432,6 +435,14 @@ public class MainActivity extends AppCompatActivity implements RequestCallback {
         if (currentPlaylist != null)
             pref.setCurrentPlayingSong(currentPlaylist.getSongs().get(currentSongPosition).getId());
         if (musicSrv != null) pref.setCurrentPlayingSongPosition(musicSrv.getSongPosition());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        stopService(exoIntent);
+        /*musicSrv = null;
+        unbindService(musicConnection);*/
     }
 
     @Override

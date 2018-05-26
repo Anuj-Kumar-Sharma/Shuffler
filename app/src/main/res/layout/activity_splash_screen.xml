@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    android:fitsSystemWindows="true"
+    tools:context=".activities.SplashScreenActivity">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:id="@+id/splashImage"
+            android:layout_width="@dimen/shuffle_button_margin"
+            android:layout_height="@dimen/shuffle_button_margin"
+            android:tint="@color/white"
+            app:srcCompat="@drawable/lg_shuffle" />
+
+
+        <com.example.anujsharma.shuffler.fonts.TypefaceTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_toRightOf="@id/splashImage"
+            android:text="mynd"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_48sdp"
+            app:typeface="@string/Font_Montserrat_SemiBold" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
