@@ -11,3 +11,24 @@ You can run this Android app on Appetize.io <a href="https://appetize.io/app/06w
 <h3>YouTube Demo</h3>
 <a href="https://www.youtube.com/embed/syQZ8loBql4" target="_blank"><img src="http://img.youtube.com/vi/syQZ8loBql4/0.jpg" 
 alt="Shuffler Demo" width="240" height="180" border="10" /></a>
+
+<h3>Screenshots</h3>
+<div class="row">
+  <div class="column">
+  <img src="/screenshots/Screenshot_2018-05-20-15-28-50-927_com.example.anujsharma.shuffler.png" width="250" title="Song Images">
+      
+  <img src="/screenshots/Screenshot_2018-05-20-15-30-35-472_com.example.anujsharma.shuffler.png" width="250" title="Responsive Notification">
+         
+  <img src="/screenshots/Screenshot_2018-05-20-15-03-01-584_com.example.anujsharma.shuffler.png" width="250" title="Artist Profile">
+        </div>       
+
+  <div class="column">
+  <img src="/screenshots/Screenshot_2018-05-20-14-59-47-654_com.example.anujsharma.shuffler.png" width="250" title="Search History">
+      </div>   
+      <div class="column">
+  <img src="/screenshots/Screenshot_2018-05-20-15-02-39-938_com.example.anujsharma.shuffler.png" width="250" title="Saved Playlists">
+         </div>   
+         <div class="column">
+<img src="/screenshots/Screenshot_2018-05-20-15-04-15-523_com.example.anujsharma.shuffler.png" width="250" title="Search Results">
+</div>       
+</div>
