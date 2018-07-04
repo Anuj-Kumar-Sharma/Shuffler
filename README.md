@@ -16,12 +16,16 @@ alt="Shuffler Demo" width="240" height="180" border="10" /></a>
 <div class="row">
   <div class="column">
   <img src="/screenshots/Screenshot_2018-05-20-15-28-50-927_com.example.anujsharma.shuffler.png" width="250" title="Song Images">
-      
+  </div>
+  <div class="column">
   <img src="/screenshots/Screenshot_2018-05-20-15-30-35-472_com.example.anujsharma.shuffler.png" width="250" title="Responsive Notification">
-         
+  </div>
+  <div class="column">       
   <img src="/screenshots/Screenshot_2018-05-20-15-03-01-584_com.example.anujsharma.shuffler.png" width="250" title="Artist Profile">
-        </div>       
-
+   </div>   
+  </div>
+  
+<div class="row">
   <div class="column">
   <img src="/screenshots/Screenshot_2018-05-20-14-59-47-654_com.example.anujsharma.shuffler.png" width="250" title="Search History">
       </div>   
