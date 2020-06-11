@@ -18,7 +18,7 @@
             android:id="@+id/ivBackButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:padding="@dimen/_12sdp"
+            android:padding="@dimen/_11sdp"
             android:tint="@color/transparent_white"
             android:background="?android:attr/selectableItemBackground"
             app:srcCompat="@drawable/ic_down_arrow" />
