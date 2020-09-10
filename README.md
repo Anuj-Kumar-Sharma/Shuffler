@@ -6,7 +6,7 @@ The main focus of Shuffler is to Shuffle a user's music playlist in such a way t
 
 ***
 
-You can run this Android app on Appetize.io <a href="https://appetize.io/app/06wpw6dgrdg02v042qxrcjt1y8?device=nexus5&scale=100&orientation=portrait&osVersion=7.1&deviceColor=black">here</a>.
+<!-- You can run this Android app on Appetize.io <a href="https://appetize.io/app/06wpw6dgrdg02v042qxrcjt1y8?device=nexus5&scale=100&orientation=portrait&osVersion=7.1&deviceColor=black">here</a>. -->
 
 <h3>YouTube Demo</h3>
 <a href="https://www.youtube.com/embed/syQZ8loBql4" target="_blank"><img src="http://img.youtube.com/vi/syQZ8loBql4/0.jpg" 
