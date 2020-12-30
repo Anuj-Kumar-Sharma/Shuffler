@@ -4,17 +4,18 @@
 <a href="https://github.com/Anuj-Kumar-Sharma/Shuffler/network/members"> <img src="https://img.shields.io/github/forks/Anuj-Kumar-Sharma/Shuffler" alt="Forks Badge"/></a>
 <a href="https://github.com/Anuj-Kumar-Sharma/Shuffler/pulls"><img src="https://img.shields.io/github/issues-pr/Anuj-Kumar-Sharma/Shuffler" alt="Pull Requests Badge"/></a>
 <a href="https://github.com/Anuj-Kumar-Sharma/Shuffler/issues"><img src="https://img.shields.io/github/issues/Anuj-Kumar-Sharma/Shuffler" alt="Issues Badge"/></a>
+>
 > An android App which Shuffles your favorite songs in the best possible way.
 
 ## Description
 >
 > The main focus of Shuffler is to Shuffle a user's music playlist in such a way that the next song that gets played is what the user will most probably want to listen. Various > factors are taken into account while shuffling a saved playlist like ***playback count, Average playing duration, Artist, Genre, Release date and like count from a particular user***. 
-
-## You can run this Android app on Appetize.io <a href="https://appetize.io/app/06wpw6dgrdg02v042qxrcjt1y8?device=nexus5&scale=100&orientation=portrait&osVersion=7.1&deviceColor=black"><i>here</i></a>.
+>
+> You can run this Android app on Appetize.io <a href="https://appetize.io/app/06wpw6dgrdg02v042qxrcjt1y8?device=nexus5&scale=100&orientation=portrait&osVersion=7.1&deviceColor=black"><i>here</i></a>.
 
 ## YouTube Demo
-<a href="https://www.youtube.com/embed/syQZ8loBql4" target="_blank"><img src="http://img.youtube.com/vi/syQZ8loBql4/0.jpg" 
-alt="Shuffler Demo" width="240" height="180" border="10" /></a>
+<a href="https://www.youtube.com/embed/syQZ8loBql4" target="_blank"><img src="https://github.com/tanishq1306/Shuffler/blob/master/screenshots/Capture.PNG" 
+alt="Shuffler Demo" width="450" height="300" border="10"/></a>
 
 
 ## Screenshots
